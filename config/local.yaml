@@ -1,0 +1,6 @@
+swe_grpc:
+  addr: "localhost:5678"
+
+web_app:
+  port: "8081"
+  appname: "webapp"

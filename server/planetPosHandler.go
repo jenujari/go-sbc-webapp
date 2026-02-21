@@ -7,24 +7,11 @@ import (
 	"net/http"
 )
 
-func staticHander() http.Handler {
-	return http.StripPrefix("/static/", http.FileServer(http.FS(html.GetAssetsFs())))
-}
-
-func indexhandler(w http.ResponseWriter, r *http.Request) {
+func planetPosHandler(w http.ResponseWriter, r *http.Request) {
 
 	cfg := config.GetConfig()
 
 	webData := lib.GetWebData(*cfg)
-
-	pingResp, err := lib.GetPing()
-	if err != nil {
-		config.GetLogger().Println("ping failed", err)
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
-
-	config.GetLogger().Println("ping response", pingResp)
 
 	tpl, err := html.GetTpl().Clone()
 	if err != nil {
@@ -33,7 +20,7 @@ func indexhandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tpl, err = tpl.ParseFS(html.GetViewsFs(), "layout.html", "index.html")
+	tpl, err = tpl.ParseFS(html.GetViewsFs(), "layout.html", "planet_pos.html")
 
 	if err != nil {
 		config.GetLogger().Println("template not found", err)
@@ -46,5 +33,4 @@ func indexhandler(w http.ResponseWriter, r *http.Request) {
 		config.GetLogger().Println("template execution failed", err)
 		http.Error(w, "template execution failed", http.StatusInternalServerError)
 	}
-
 }

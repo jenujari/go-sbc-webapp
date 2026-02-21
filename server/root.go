@@ -16,9 +16,12 @@ var (
 )
 
 func init() {
+	cfg := config.GetConfig()
+
+	fmt.Println(cfg)
 
 	server = &http.Server{
-		Addr:              ":3000",
+		Addr:              ":" + cfg.WebAppConfig.Port,
 		ReadTimeout:       0,
 		ReadHeaderTimeout: 0,
 		WriteTimeout:      0,
@@ -29,6 +32,7 @@ func init() {
 
 	router.Handle("/static/", staticHander())
 
+	router.HandleFunc("/pos-table", planetPosHandler)
 	router.HandleFunc("/", indexhandler)
 
 	server.Handler = router
