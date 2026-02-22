@@ -6,8 +6,20 @@ services:
   webapi:
     build:
       context: .
-      dockerfile: dev.Dockerfile
+      dockerfile: Dockerfile
     image: webapi:latest
+    depends_on:
+      - sweapi
+    ports:
+      - "8081:8081"
+    environment:
+      - ENV=container
+      - CONFIG_PATH=/app/config
+  webapi-dev:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    image: webapi-dev:latest
     depends_on:
       - sweapi
     ports:

@@ -1,0 +1,64 @@
+<div
+    class="bg-white rounded-2xl border border-slate-200 p-6 lg:p-8 shadow-sm transition-all hover:shadow-md animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center space-x-3">
+            <div class="p-2.5 bg-blue-50 rounded-xl border border-blue-100">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 002 2h1.065M15 3a9 9 0 11-18 0 9 9 0 0118 0z">
+                    </path>
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold text-slate-900 leading-tight">Celestial Snapshot</h3>
+                <p class="text-sm text-slate-500 font-medium">{{.displayDate}}</p>
+            </div>
+        </div>
+        <button type="button" class="text-slate-400 hover:text-slate-600 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+        </button>
+    </div>
+
+    <div class="overflow-hidden rounded-xl border border-slate-100">
+        <table class="w-full text-left text-sm">
+            <thead class="bg-slate-50/50">
+                <tr class="text-slate-500 font-semibold">
+                    <th class="py-4 px-4">Planet</th>
+                    <th class="py-4 px-4 text-right">Longitude</th>
+                    <th class="py-4 px-4 text-right">Latitude</th>
+                    <th class="py-4 px-4 text-right">Retrograde</th>
+                    <th class="py-4 px-4 text-right">Sign</th>
+                    <th class="py-4 px-4 text-right">Nakshatra</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+                {{ range .planets }}
+                <tr class="group hover:bg-slate-50/30 transition-colors">
+                    <td class="py-4 px-4">
+                        <div class="flex items-center space-x-3">
+                            <!-- <span
+                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 text-xs">
+                            </span> -->
+                            <span class="font-bold text-slate-700">{{ .Name }}</span>
+                        </div>
+                    </td>
+                    <td class="py-4 px-4 text-right font-mono text-slate-600 tracking-tight">{{ .Longitude }}</td>
+                    <td class="py-4 px-4 text-right font-mono text-slate-600 tracking-tight">{{ .Latitude }}</td>
+                    <td class="py-4 px-4 text-right font-mono text-slate-600 tracking-tight">{{ .IsRetrograde }}</td>
+                    <td class="py-4 px-4 text-right font-mono text-slate-600 tracking-tight">{{ .Sign }}</td>
+                    <td class="py-4 px-4 text-right font-mono text-slate-600 tracking-tight">{{ .Nakshatra }}</td>
+                </tr>
+                {{ end }}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-6 flex items-center justify-center space-x-4">
+        <span class="text-xs text-slate-400 font-medium">Data source: Swiss Ephemeris</span>
+        <span class="w-1 h-1 rounded-full bg-slate-200"></span>
+        <span class="text-xs text-slate-400 font-medium">Precision: High</span>
+    </div>
+</div>

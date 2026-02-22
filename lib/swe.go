@@ -9,21 +9,33 @@ import (
 	"github.com/jenujari/go-swe-api/proto"
 )
 
-func GetPing() (*proto.PingResponse, error) {
+type SweGrpcClient interface {
+	Ping(ctx context.Context) (*proto.PingResponse, error)
+	GetPos(ctx context.Context, datetime string, planet string) (*proto.PosResponse, error)
+}
 
+type SweGrpcClientImpl struct {
+	client *client.EphServiceClient
+}
+
+func NewSweGrpcClient() (SweGrpcClient, error) {
 	cfg := config.GetConfig()
-
 	c, err := client.NewEphServiceClient(cfg.SweGrpcConfig.Addr)
 	if err != nil {
 		return nil, fmt.Errorf("could not create client: %v", err)
 	}
-	defer c.Close()
 
-	pingResp, err := c.Ping(context.Background())
+	sweImpl := new(SweGrpcClientImpl)
 
-	if err != nil {
-		return nil, fmt.Errorf("could not ping server: %v", err)
-	}
+	sweImpl.client = c
 
-	return pingResp, nil
+	return sweImpl, nil
+}
+
+func (c *SweGrpcClientImpl) Ping(ctx context.Context) (*proto.PingResponse, error) {
+	return c.client.Ping(ctx)
+}
+
+func (c *SweGrpcClientImpl) GetPos(ctx context.Context, datetime string, planet string) (*proto.PosResponse, error) {
+	return c.client.GetPos(ctx, datetime, planet)
 }

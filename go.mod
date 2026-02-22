@@ -2,7 +2,12 @@ module jenujari/go-sbc-webapp
 
 go 1.25.6
 
-require github.com/jenujari/runtime-context v0.0.0-20250912231647-fa052a1c1da3
+require (
+	github.com/jenujari/go-swe-api v0.0.0-20260218220728-c899d193fad1
+	github.com/jenujari/planets-lib v0.0.0-20260218212759-f5ba468e7cb6
+	github.com/jenujari/runtime-context v0.0.0-20250912231647-fa052a1c1da3
+	github.com/spf13/viper v1.21.0
+)
 
 require (
 	dario.cat/mergo v1.0.2 // indirect
@@ -15,19 +20,15 @@ require (
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/gohugoio/hugo v0.149.1 // indirect
-	github.com/jenujari/go-swe-api v0.0.0-20260218220728-c899d193fad1 // indirect
-	github.com/jenujari/planets-lib v0.0.0-20260218212759-f5ba468e7cb6 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	github.com/mshafiee/swephgo v1.1.0 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/sagikazarmark/locafero v0.12.0 // indirect
 	github.com/spf13/afero v1.15.0 // indirect
 	github.com/spf13/cast v1.10.0 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
-	github.com/spf13/viper v1.21.0 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/tdewolff/parse/v2 v2.8.3 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect

@@ -1,11 +1,13 @@
 package server
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
 
 	"jenujari/go-sbc-webapp/config"
+	"jenujari/go-sbc-webapp/lib"
 
 	rtc "github.com/jenujari/runtime-context"
 )
@@ -17,8 +19,6 @@ var (
 
 func init() {
 	cfg := config.GetConfig()
-
-	fmt.Println(cfg)
 
 	server = &http.Server{
 		Addr:              ":" + cfg.WebAppConfig.Port,
@@ -33,9 +33,10 @@ func init() {
 	router.Handle("/static/", staticHander())
 
 	router.HandleFunc("/pos-table", planetPosHandler)
+	router.HandleFunc("/positions", positionsHandler)
 	router.HandleFunc("/", indexhandler)
 
-	server.Handler = router
+	server.Handler = GlobalRequestContextSetter(router)
 	config.GetLogger().Println("server initialization complete.")
 }
 
@@ -58,4 +59,15 @@ func RunServer() {
 
 func GetServer() *http.Server {
 	return server
+}
+
+func GlobalRequestContextSetter(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+
+		ctx = context.WithValue(ctx, "services", lib.GetAllServices())
+
+		r = r.WithContext(ctx)
+		next.ServeHTTP(w, r)
+	})
 }

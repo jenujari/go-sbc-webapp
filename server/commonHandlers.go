@@ -12,12 +12,13 @@ func staticHander() http.Handler {
 }
 
 func indexhandler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	services := ctx.Value("services").(map[string]any)
 
-	cfg := config.GetConfig()
+	webData := services["webData"].(lib.WebData)
+	sweClient := services["sweClient"].(lib.SweGrpcClient)
 
-	webData := lib.GetWebData(*cfg)
-
-	pingResp, err := lib.GetPing()
+	pingResp, err := sweClient.Ping(ctx)
 	if err != nil {
 		config.GetLogger().Println("ping failed", err)
 		http.Error(w, "internal server error", http.StatusInternalServerError)
