@@ -1,0 +1,95 @@
+# complete-setup.yaml
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: webapp-config
+data:
+  container.yaml: |
+    swe_grpc:
+      addr: "sweapi-service:5678"
+
+    web_app:
+      port: "8081"
+      appname: "webapp"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sweapi
+  labels:
+    app: sweapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sweapi
+  template:
+    metadata:
+      labels:
+        app: sweapi
+    spec:
+      containers:
+      - name: sweapi
+        image: docker.io/jhon5456/swegrpc:latest
+        ports:
+        - containerPort: 5678
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sweapi-service
+spec:
+  selector:
+    app: sweapi
+  ports:
+  - port: 5678
+    targetPort: 5678
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp
+  labels:
+    app: webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+      - name: webapp
+        image: docker.io/jhon5456/swewebapp:latest
+        ports:
+        - containerPort: 8081
+        env:
+        - name: ENV
+          value: "container"
+        - name: CONFIG_PATH
+          value: "/app/config"
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config/container.yaml
+          subPath: container.yaml
+      volumes:
+      - name: config-volume
+        configMap:
+          name: webapp-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-service
+spec:
+  selector:
+    app: webapp
+  ports:
+  - port: 8081
+    targetPort: 8081
+  type: ClusterIP
