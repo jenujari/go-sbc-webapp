@@ -1,64 +1,427 @@
-<div
-    class="bg-white rounded-2xl border border-slate-200 p-6 lg:p-8 shadow-sm transition-all hover:shadow-md animate-in fade-in slide-in-from-bottom-4 duration-500">
-    <div class="flex items-center justify-between mb-8">
-        <div class="flex items-center space-x-3">
-            <div class="p-2.5 bg-blue-50 rounded-xl border border-blue-100">
-                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 002 2h1.065M15 3a9 9 0 11-18 0 9 9 0 0118 0z">
-                    </path>
-                </svg>
-            </div>
-            <div>
-                <h3 class="text-lg font-bold font-noto-serif text-slate-900 leading-tight">Celestial Snapshot</h3>
-                <p class="text-sm text-slate-500 font-medium font-roboto">{{.displayDate}}</p>
-            </div>
-        </div>
-        <button type="button" class="text-slate-400 hover:text-slate-600 transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-            </svg>
-        </button>
+<div x-data="{ activeTab: 'wheel' }"
+  class="bg-white rounded-2xl border border-slate-200 p-6 lg:p-8 shadow-sm transition-all hover:shadow-md animate-in fade-in slide-in-from-bottom-4 duration-500">
+  <div class="flex items-center justify-between mb-8">
+    <div class="flex items-center space-x-3">
+      <div class="p-2.5 bg-blue-50 rounded-xl border border-blue-100">
+        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 002 2h1.065M15 3a9 9 0 11-18 0 9 9 0 0118 0z">
+          </path>
+        </svg>
+      </div>
+      <div>
+        <h3 class="text-lg font-bold font-noto-serif text-slate-900 leading-tight">Celestial Snapshot</h3>
+        <p class="text-sm text-slate-500 font-medium font-roboto">{{.displayDate}}</p>
+      </div>
     </div>
+    <button type="button" class="text-slate-400 hover:text-slate-600 transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+      </svg>
+    </button>
+  </div>
 
+  <div class="mb-6 flex items-center rounded-xl border border-slate-200 bg-slate-50 p-1">
+    <button type="button" @click="activeTab = 'wheel'"
+      :class="activeTab === 'wheel' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'"
+      class="flex-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold font-raleway transition-colors">
+      Wheel
+    </button>
+    <button type="button" @click="activeTab = 'table'"
+      :class="activeTab === 'table' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'"
+      class="flex-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold font-raleway transition-colors">
+      Table
+    </button>
+  </div>
+
+  <section x-show="activeTab === 'wheel'" x-transition.opacity
+    class="rounded-2xl border border-slate-100 bg-slate-50/60 p-4 lg:p-6">
+    <div class="mb-5 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+      <div>
+        <h4 class="text-lg font-bold font-noto-serif text-slate-900">Rashi And Nakshatra Wheel</h4>
+        <p class="text-sm font-medium font-raleway text-slate-500">Inner ring shows 12 signs in 30° slices. Outer ring
+          shows 28 nakshatra divisions including Abhijit.</p>
+      </div>
+      <div class="text-xs font-medium font-raleway text-slate-400">Planet placement uses longitude for angle and
+        latitude for radial offset.</div>
+    </div>
+    <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 lg:p-6">
+      <svg id="astro-wheel" class="mx-auto block h-auto w-full max-w-[920px]" viewBox="0 0 920 920" role="img"
+        aria-label="Planetary sign and nakshatra wheel"></svg>
+      <div id="astro-wheel-tooltip"
+        class="pointer-events-none absolute hidden rounded-xl border border-slate-200 bg-white/95 px-3 py-2 text-sm shadow-xl ring-1 ring-slate-100 backdrop-blur-sm">
+      </div>
+    </div>
+  </section>
+
+  <section x-show="activeTab === 'table'" x-transition.opacity class="rounded-2xl border border-slate-100">
     <div class="overflow-hidden rounded-xl border border-slate-100">
-        <table class="w-full text-left text-sm">
-            <thead class="bg-slate-50/50">
-                <tr class="text-slate-500 font-semibold font-raleway">
-                    <th class="py-4 px-4">Planet</th>
-                    <th class="py-4 px-4 text-right">Longitude</th>
-                    <th class="py-4 px-4 text-right">Latitude</th>
-                    <th class="py-4 px-4 text-right">Retrograde</th>
-                    <th class="py-4 px-4 text-right">Sign</th>
-                    <th class="py-4 px-4 text-right">Nakshatra</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-50">
-                {{ range .planets }}
-                <tr class="group hover:bg-slate-50/30 transition-colors">
-                    <td class="py-4 px-4">
-                        <div class="flex items-center space-x-3">
-                            <!-- <span
-                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 text-xs">
-                            </span> -->
-                            <span class="font-bold font-noto-serif text-slate-700">{{ .Name }}</span>
-                        </div>
-                    </td>
-                    <td class="py-4 px-4 text-right font-roboto text-slate-600 tracking-tight">{{ .Longitude }}</td>
-                    <td class="py-4 px-4 text-right font-roboto text-slate-600 tracking-tight">{{ .Latitude }}</td>
-                    <td class="py-4 px-4 text-right font-roboto text-slate-600 tracking-tight">{{ .IsRetrograde }}</td>
-                    <td class="py-4 px-4 text-right font-roboto text-slate-600 tracking-tight">{{ .Sign }}</td>
-                    <td class="py-4 px-4 text-right font-roboto text-slate-600 tracking-tight">{{ .Nakshatra }}</td>
-                </tr>
-                {{ end }}
-            </tbody>
-        </table>
+      <table class="w-full text-left text-sm">
+        <thead class="bg-slate-50/50">
+          <tr class="text-slate-500 font-semibold font-raleway">
+            <th class="py-4 px-4">Planet</th>
+            <th class="py-4 px-4 text-right">Longitude</th>
+            <th class="py-4 px-4 text-right">Latitude</th>
+            <th class="py-4 px-4 text-right">Retrograde</th>
+            <th class="py-4 px-4 text-right">Sign</th>
+            <th class="py-4 px-4 text-right">Nakshatra</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-50">
+          {{ range .planets }}
+          <tr class="group hover:bg-slate-50/30 transition-colors">
+            <td class="py-4 px-4">
+              <div class="flex items-center space-x-3">
+                <span class="font-bold font-noto-serif text-slate-700">{{ .Name }}</span>
+              </div>
+            </td>
+            <td class="py-4 px-4 text-right font-roboto text-slate-600 tracking-tight">{{ .Longitude }}</td>
+            <td class="py-4 px-4 text-right font-roboto text-slate-600 tracking-tight">{{ .Latitude }}</td>
+            <td class="py-4 px-4 text-right font-roboto text-slate-600 tracking-tight">{{ .IsRetrograde }}</td>
+            <td class="py-4 px-4 text-right font-roboto text-slate-600 tracking-tight">{{ .Sign }}</td>
+            <td class="py-4 px-4 text-right font-roboto text-slate-600 tracking-tight">{{ .Nakshatra }}</td>
+          </tr>
+          {{ end }}
+        </tbody>
+      </table>
     </div>
+  </section>
 
-    <div class="mt-6 flex items-center justify-center space-x-4">
-        <span class="text-xs text-slate-400 font-medium font-raleway">Data source: Swiss Ephemeris</span>
-        <span class="w-1 h-1 rounded-full bg-slate-200"></span>
-        <span class="text-xs text-slate-400 font-medium font-raleway">Precision: High</span>
-    </div>
+  <div class="mt-6 flex items-center justify-center space-x-4">
+    <span class="text-xs text-slate-400 font-medium font-raleway">Data source: Swiss Ephemeris</span>
+    <span class="w-1 h-1 rounded-full bg-slate-200"></span>
+    <span class="text-xs text-slate-400 font-medium font-raleway">Precision: High</span>
+  </div>
 </div>
+
+<script>
+  (() => {
+    const svg = document.getElementById("astro-wheel");
+    const tooltip = document.getElementById("astro-wheel-tooltip");
+    const wheelWrap = svg?.parentElement;
+    if (!svg) return;
+
+  const planets = {{toJsonJS .planets}};
+  const signSegments = [
+    {label: "Aries", start: 0, end: 30, fill: "#fde68a"},
+    {label: "Taurus", start: 30, end: 60, fill: "#bfdbfe"},
+    {label: "Gemini", start: 60, end: 90, fill: "#fbcfe8"},
+    {label: "Cancer", start: 90, end: 120, fill: "#fde68a"},
+    {label: "Leo", start: 120, end: 150, fill: "#bfdbfe"},
+    {label: "Virgo", start: 150, end: 180, fill: "#fbcfe8"},
+    {label: "Libra", start: 180, end: 210, fill: "#fde68a"},
+    {label: "Scorpio", start: 210, end: 240, fill: "#bfdbfe"},
+    {label: "Sagittarius", start: 240, end: 270, fill: "#fbcfe8"},
+    {label: "Capricorn", start: 270, end: 300, fill: "#fde68a"},
+    {label: "Aquarius", start: 300, end: 330, fill: "#bfdbfe"},
+    {label: "Pisces", start: 330, end: 360, fill: "#fbcfe8"}
+  ];
+  const nakshatraSegments = [
+    {label: "Ashwini", start: 0, end: 13.333333},
+    {label: "Bharani", start: 13.333333, end: 26.666666},
+    {label: "Krittika", start: 26.666666, end: 40},
+    {label: "Rohini", start: 40, end: 53.333333},
+    {label: "Mrigashirsha", start: 53.333333, end: 66.666666},
+    {label: "Ardra", start: 66.666666, end: 80},
+    {label: "Punarvasu", start: 80, end: 93.333333},
+    {label: "Pushya", start: 93.333333, end: 106.666666},
+    {label: "Ashlesha", start: 106.666666, end: 120},
+    {label: "Magha", start: 120, end: 133.333333},
+    {label: "Purva Phalguni", start: 133.333333, end: 146.666666},
+    {label: "Uttara Phalguni", start: 146.666666, end: 160},
+    {label: "Hasta", start: 160, end: 173.333333},
+    {label: "Chitra", start: 173.333333, end: 186.666666},
+    {label: "Swati", start: 186.666666, end: 200},
+    {label: "Vishakha", start: 200, end: 213.333333},
+    {label: "Anuradha", start: 213.333333, end: 226.666666},
+    {label: "Jyeshtha", start: 226.666666, end: 240},
+    {label: "Moola", start: 240, end: 253.333333},
+    {label: "Purva Ashadha", start: 253.333333, end: 266.666666},
+    {label: "Uttara Ashadha", start: 266.666666, end: 276.666666},
+    {label: "Abhijit", start: 276.666666, end: 280.888889},
+    {label: "Shravana", start: 280.888889, end: 293.333333},
+    {label: "Dhanishtha", start: 293.333333, end: 306.666666},
+    {label: "Shatabhisha", start: 306.666666, end: 320},
+    {label: "Purva Bhadrapada", start: 320, end: 333.333333},
+    {label: "Uttara Bhadrapada", start: 333.333333, end: 346.666666},
+    {label: "Revati", start: 346.666666, end: 360}
+  ];
+  const planetPalette = ["#2563eb", "#db2777", "#ea580c", "#0891b2", "#16a34a", "#7c3aed", "#dc2626", "#0f766e", "#9333ea", "#b45309"];
+
+  const size = 920;
+  const cx = size / 2;
+  const cy = size / 2;
+  const signInner = 205;
+  const signOuter = 300;
+  const nakInner = 310;
+  const nakOuter = 372;
+  const orbitGuide = 430;
+  const solarOrbitRadius = 404;
+  const earthRadius = 76;
+  const sunPlanet = planets.find((planet) => planet.Name.toLowerCase() === "sun") || null;
+  const sunLatitude = sunPlanet ? sunPlanet.Lat : 0;
+
+  const relativeLatitudes = planets.map((planet) => planet.Lat - sunLatitude);
+  const maxRelativeMagnitude = relativeLatitudes.length
+    ? Math.max(...relativeLatitudes.map((value) => Math.abs(value))) || 1
+    : 1;
+  const clusterThreshold = 6;
+
+  svg.innerHTML = "";
+
+  const ns = "http://www.w3.org/2000/svg";
+
+  const polarToCartesian = (radius, degrees) => {
+    const radians = (degrees * Math.PI) / 180;
+    return {
+      x: cx + radius * Math.cos(radians),
+      y: cy - radius * Math.sin(radians),
+    };
+  };
+
+  const donutPath = (innerRadius, outerRadius, startDeg, endDeg) => {
+    const startOuter = polarToCartesian(outerRadius, startDeg);
+    const endOuter = polarToCartesian(outerRadius, endDeg);
+    const startInner = polarToCartesian(innerRadius, endDeg);
+    const endInner = polarToCartesian(innerRadius, startDeg);
+    const largeArc = endDeg - startDeg > 180 ? 1 : 0;
+
+    return [
+      `M ${startOuter.x} ${startOuter.y}`,
+      `A ${outerRadius} ${outerRadius} 0 ${largeArc} 0 ${endOuter.x} ${endOuter.y}`,
+      `L ${startInner.x} ${startInner.y}`,
+      `A ${innerRadius} ${innerRadius} 0 ${largeArc} 1 ${endInner.x} ${endInner.y}`,
+      "Z"
+    ].join(" ");
+  };
+
+  const createSvgEl = (name, attrs = {}) => {
+    const el = document.createElementNS(ns, name);
+    Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value));
+    return el;
+  };
+
+  const addText = (x, y, text, attrs = {}) => {
+    const node = createSvgEl("text", {x, y, ...attrs});
+    node.textContent = text;
+    svg.appendChild(node);
+    return node;
+  };
+
+  const normalizeAngle = (degrees) => ((degrees % 360) + 360) % 360;
+  const shortestAngleDiff = (a, b) => {
+    const diff = Math.abs(normalizeAngle(a) - normalizeAngle(b));
+    return Math.min(diff, 360 - diff);
+  };
+
+  const clusteredPlanets = [...planets]
+    .sort((a, b) => a.Long - b.Long)
+    .map((planet) => ({...planet, clusterIndex: 0, clusterSize: 1}));
+
+  const clusters = [];
+  clusteredPlanets.forEach((planet) => {
+    const lastCluster = clusters[clusters.length - 1];
+    if (!lastCluster || shortestAngleDiff(lastCluster[lastCluster.length - 1].Long, planet.Long) > clusterThreshold) {
+      clusters.push([planet]);
+      return;
+    }
+    lastCluster.push(planet);
+  });
+
+  if (clusters.length > 1) {
+    const firstCluster = clusters[0];
+    const lastCluster = clusters[clusters.length - 1];
+    if (shortestAngleDiff(firstCluster[0].Long, lastCluster[lastCluster.length - 1].Long) <= clusterThreshold) {
+      clusters[0] = lastCluster.concat(firstCluster);
+      clusters.pop();
+    }
+  }
+
+  clusters.forEach((cluster) => {
+    cluster.forEach((planet, index) => {
+      planet.clusterIndex = index;
+      planet.clusterSize = cluster.length;
+    });
+  });
+
+  svg.appendChild(createSvgEl("rect", {x: 0, y: 0, width: size, height: size, fill: "#ffffff"}));
+  svg.appendChild(createSvgEl("circle", {cx, cy, r: orbitGuide, fill: "#f8fafc", stroke: "#e2e8f0", "stroke-width": 1}));
+  svg.appendChild(createSvgEl("circle", {cx, cy, r: signInner - 10, fill: "#e0f2fe", stroke: "#cbd5e1", "stroke-width": 1.5}));
+  svg.appendChild(createSvgEl("circle", {
+    cx, cy, r: solarOrbitRadius,
+    fill: "none",
+    stroke: "#f59e0b",
+    "stroke-width": 2.5,
+    "stroke-dasharray": "8 7",
+    opacity: "0.85"
+  }));
+
+  signSegments.forEach((segment) => {
+    svg.appendChild(createSvgEl("path", {
+      d: donutPath(signInner, signOuter, segment.start, segment.end),
+      fill: segment.fill,
+      stroke: "#ffffff",
+      "stroke-width": 2
+    }));
+
+    const mid = (segment.start + segment.end) / 2;
+    const labelPoint = polarToCartesian((signInner + signOuter) / 2, mid);
+    addText(labelPoint.x, labelPoint.y, segment.label, {
+      "text-anchor": "middle",
+      "dominant-baseline": "middle",
+      fill: "#334155",
+      "font-size": "17",
+      "font-weight": "700"
+    });
+  });
+
+  nakshatraSegments.forEach((segment, index) => {
+    svg.appendChild(createSvgEl("path", {
+      d: donutPath(nakInner, nakOuter, segment.start, segment.end),
+      fill: index % 2 === 0 ? "#fef3c7" : "#dbeafe",
+      stroke: "#ffffff",
+      "stroke-width": 1.5
+    }));
+
+    const mid = (segment.start + segment.end) / 2;
+    const labelPoint = polarToCartesian((nakInner + nakOuter) / 2, mid);
+    addText(labelPoint.x, labelPoint.y, segment.label, {
+      "text-anchor": "middle",
+      "dominant-baseline": "middle",
+      fill: "#7c2d12",
+      "font-size": segment.label.length > 12 ? "10" : "11",
+      "font-weight": "600"
+    });
+  });
+
+  for (let deg = 0; deg < 360; deg += 30) {
+    const inner = polarToCartesian(signInner - 12, deg);
+    const outer = polarToCartesian(nakOuter + 8, deg);
+    svg.appendChild(createSvgEl("line", {
+      x1: inner.x, y1: inner.y, x2: outer.x, y2: outer.y,
+      stroke: "#cbd5e1", "stroke-width": 1.5
+    }));
+
+    const degreePoint = polarToCartesian(signInner - 34, deg === 360 ? 0 : deg);
+    addText(degreePoint.x, degreePoint.y, `${deg}°`, {
+      "text-anchor": "middle",
+      "dominant-baseline": "middle",
+      fill: "#475569",
+      "font-size": "14",
+      "font-weight": "700"
+    });
+  }
+
+  svg.appendChild(createSvgEl("circle", {cx, cy, r: signInner, fill: "none", stroke: "#cbd5e1", "stroke-width": 1.5}));
+  svg.appendChild(createSvgEl("circle", {cx, cy, r: signOuter, fill: "none", stroke: "#cbd5e1", "stroke-width": 1.5}));
+  svg.appendChild(createSvgEl("circle", {cx, cy, r: nakInner, fill: "none", stroke: "#cbd5e1", "stroke-width": 1.5}));
+  svg.appendChild(createSvgEl("circle", {cx, cy, r: nakOuter, fill: "none", stroke: "#cbd5e1", "stroke-width": 1.5}));
+
+  const showTooltip = (event, planet, color) => {
+    if (!tooltip || !wheelWrap) return;
+    const relativeLatitude = planet.Lat - sunLatitude;
+    tooltip.innerHTML = `
+            <div class="font-semibold font-noto-serif text-slate-900">${planet.Name}</div>
+            <div class="mt-1 text-xs font-medium font-roboto text-slate-600">Longitude: ${planet.Longitude}</div>
+            <div class="text-xs font-medium font-roboto text-slate-500">Latitude: ${planet.Latitude}</div>
+            <div class="text-xs font-medium font-roboto text-slate-500">Relative to Sun: ${relativeLatitude >= 0 ? "+" : ""}${relativeLatitude.toFixed(2)}°</div>
+        `;
+    tooltip.style.borderColor = color;
+    tooltip.style.display = "block";
+    tooltip.classList.remove("hidden");
+
+    const bounds = wheelWrap.getBoundingClientRect();
+    const left = event.clientX - bounds.left + 14;
+    const top = event.clientY - bounds.top - 12;
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${top}px`;
+  };
+
+  const hideTooltip = () => {
+    if (!tooltip) return;
+    tooltip.style.display = "none";
+    tooltip.classList.add("hidden");
+  };
+
+  clusteredPlanets.forEach((planet, index) => {
+    const relativeLatitude = planet.Lat - sunLatitude;
+    const normalizedRelativeLatitude = relativeLatitude / maxRelativeMagnitude;
+    const clusterCenter = (planet.clusterSize - 1) / 2;
+    const tangentialOffset = (planet.clusterIndex - clusterCenter) * 18;
+    const clusterRadialOffset = relativeLatitude === 0
+      ? (planet.clusterIndex - clusterCenter) * 5
+      : Math.sign(relativeLatitude) * Math.abs(planet.clusterIndex - clusterCenter) * 6;
+    const isSun = planet.Name.toLowerCase() === "sun";
+    const planetRadius = isSun
+      ? solarOrbitRadius
+      : solarOrbitRadius + normalizedRelativeLatitude * 30 + clusterRadialOffset;
+    const angle = normalizeAngle(planet.Long + (tangentialOffset / planetRadius) * (180 / Math.PI));
+    const anchor = polarToCartesian(isSun ? solarOrbitRadius : nakOuter + 3, angle);
+    const position = polarToCartesian(planetRadius, angle);
+    const color = planetPalette[index % planetPalette.length];
+    const shortName = planet.Name.length > 2 ? planet.Name.slice(0, 2).toUpperCase() : planet.Name.toUpperCase();
+    const group = createSvgEl("g", {cursor: "pointer"});
+    const halo = createSvgEl("circle", {
+      cx: position.x, cy: position.y, r: 17,
+      fill: color, opacity: "0"
+    });
+    const leader = createSvgEl("line", {
+      x1: anchor.x, y1: anchor.y, x2: position.x, y2: position.y,
+      stroke: color, "stroke-width": 2, "stroke-linecap": "round", opacity: "0.9"
+    });
+    const marker = createSvgEl("circle", {
+      cx: position.x, cy: position.y, r: 10.5,
+      fill: color, stroke: "#ffffff", "stroke-width": 2
+    });
+    const code = createSvgEl("text", {
+      x: position.x, y: position.y + 0.5,
+      "text-anchor": "middle",
+      "dominant-baseline": "middle",
+      fill: "#ffffff",
+      "font-size": "10",
+      "font-weight": "800"
+    });
+    code.textContent = shortName;
+
+    group.appendChild(halo);
+    group.appendChild(leader);
+    group.appendChild(marker);
+    group.appendChild(code);
+
+    group.addEventListener("mouseenter", (event) => {
+      halo.setAttribute("opacity", "0.18");
+      leader.setAttribute("stroke-width", "3.5");
+      marker.setAttribute("r", "12.5");
+      showTooltip(event, planet, color);
+    });
+
+    group.addEventListener("mousemove", (event) => {
+      showTooltip(event, planet, color);
+    });
+
+    group.addEventListener("mouseleave", () => {
+      halo.setAttribute("opacity", "0");
+      leader.setAttribute("stroke-width", "2");
+      marker.setAttribute("r", "10.5");
+      hideTooltip();
+    });
+
+    svg.appendChild(group);
+  });
+
+  svg.appendChild(createSvgEl("circle", {cx, cy, r: earthRadius, fill: "#e0f2fe", stroke: "#94a3b8", "stroke-width": 2}));
+  addText(cx, cy - 8, "Earth", {
+    "text-anchor": "middle",
+    fill: "#0f172a",
+    "font-size": "30",
+    "font-weight": "700"
+  });
+  addText(cx, cy + 26, "Centered Reference", {
+    "text-anchor": "middle",
+    fill: "#64748b",
+    "font-size": "14",
+    "font-weight": "500"
+  });
+}) ();
+</script>

@@ -58,5 +58,13 @@ func getFuncMap() template.FuncMap {
 		return string(b)
 	}
 
+	funcMap["toJsonJS"] = func(obj any) template.JS {
+		b, e := json.Marshal(obj)
+		if e != nil {
+			return template.JS("[]")
+		}
+		return template.JS(b)
+	}
+
 	return funcMap
 }
