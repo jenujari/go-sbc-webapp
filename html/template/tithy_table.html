@@ -1,0 +1,66 @@
+<div
+    class="bg-white rounded-2xl border border-slate-200 p-6 lg:p-8 shadow-sm transition-all hover:shadow-md animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center space-x-3">
+            <div class="p-2.5 bg-blue-50 rounded-xl border border-blue-100">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                    </path>
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold font-noto-serif text-slate-900 leading-tight">Tithy Around {{.displayDate}}</h3>
+                <p class="text-sm text-slate-500 font-medium font-roboto">{{.rangeStart}} to {{.rangeEnd}}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {{ range .tithies }}
+        <div class="{{ if eq .DateValue $.selectedDateValue }}rounded-xl border border-blue-300 bg-blue-50/80 px-4 py-4 shadow-sm ring-2 ring-blue-200/70 transition-colors{{ else }}rounded-xl border border-slate-200 bg-slate-50/60 px-4 py-4 transition-colors hover:border-blue-200 hover:bg-blue-50/40{{ end }}">
+            <div class="flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full {{ if eq .DateValue $.selectedDateValue }}bg-blue-100 ring-1 ring-blue-200{{ else }}bg-white ring-1 ring-slate-200{{ end }}">
+                        <svg class="h-6 w-6" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                            <circle cx="16" cy="16" r="11" fill="#0f172a"></circle>
+                            {{ if le .TithyValue 1 }}
+                            <circle cx="16" cy="16" r="10" fill="#e2e8f0"></circle>
+                            {{ else if le .TithyValue 7 }}
+                            <circle cx="13" cy="16" r="10" fill="#e2e8f0"></circle>
+                            {{ else if le .TithyValue 14 }}
+                            <path d="M16 6 A10 10 0 0 1 16 26 Z" fill="#e2e8f0"></path>
+                            {{ else if le .TithyValue 16 }}
+                            <circle cx="16" cy="16" r="10" fill="#e2e8f0"></circle>
+                            {{ else if le .TithyValue 22 }}
+                            <circle cx="19" cy="16" r="10" fill="#e2e8f0"></circle>
+                            {{ else if le .TithyValue 29 }}
+                            <path d="M16 6 A10 10 0 0 0 16 26 Z" fill="#e2e8f0"></path>
+                            {{ else }}
+                            <circle cx="16" cy="16" r="4" fill="#e2e8f0"></circle>
+                            {{ end }}
+                            <circle cx="16" cy="16" r="11" stroke="{{ if eq .DateValue $.selectedDateValue }}#60a5fa{{ else }}#cbd5e1{{ end }}" stroke-width="1.5"></circle>
+                        </svg>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-bold font-noto-serif text-slate-700">{{ .DateLabel }}</span>
+                        {{ if eq .DateValue $.selectedDateValue }}
+                        <span class="text-xs font-medium font-raleway uppercase tracking-wide text-blue-700">Selected Date</span>
+                        {{ end }}
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold font-raleway text-amber-700 ring-1 ring-amber-200">{{ .DisplayPaksha }}</span>
+                    <span class="rounded-full bg-white px-3 py-1 text-sm font-semibold font-roboto text-blue-700 ring-1 ring-slate-200">{{ .DisplayTithyValue }}</span>
+                </div>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+
+    <div class="mt-6 flex items-center justify-center space-x-4">
+        <span class="text-xs text-slate-400 font-medium font-raleway">Lookup time fixed at 03:30 UTC</span>
+        <span class="w-1 h-1 rounded-full bg-slate-200"></span>
+        <span class="text-xs text-slate-400 font-medium font-raleway">Window: 21 days</span>
+    </div>
+</div>

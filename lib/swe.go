@@ -12,6 +12,7 @@ import (
 type SweGrpcClient interface {
 	Ping(ctx context.Context) (*proto.PingResponse, error)
 	GetPos(ctx context.Context, datetime string, planet string) (*proto.PosResponse, error)
+	Tithy(ctx context.Context, timestamp string) (*proto.TithyResponse, error)
 }
 
 type SweGrpcClientImpl struct {
@@ -38,4 +39,8 @@ func (c *SweGrpcClientImpl) Ping(ctx context.Context) (*proto.PingResponse, erro
 
 func (c *SweGrpcClientImpl) GetPos(ctx context.Context, datetime string, planet string) (*proto.PosResponse, error) {
 	return c.client.GetPos(ctx, datetime, planet)
+}
+
+func (c *SweGrpcClientImpl) Tithy(ctx context.Context, timestamp string) (*proto.TithyResponse, error) {
+	return c.client.Tithy(ctx, timestamp)
 }
