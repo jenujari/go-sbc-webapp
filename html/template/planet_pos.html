@@ -31,12 +31,12 @@
     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 lg:p-8 transition-all hover:shadow-md">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
             <div>
-                <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Planet Positions</h1>
-                <p class="text-slate-500 text-sm mt-1">Calculate celestial coordinates for any date and time.</p>
+                <h1 class="text-2xl font-bold font-playfair text-slate-900 tracking-tight">Planet Positions</h1>
+                <p class="text-slate-500 text-sm mt-1 font-noto-sans">Calculate celestial coordinates for any date and time.</p>
             </div>
 
             <div
-                class="flex items-center space-x-2 text-sm font-medium text-slate-600 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200">
+                class="flex items-center space-x-2 text-sm font-medium font-raleway text-slate-600 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200">
                 <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
                 <span>Live Calculation</span>
             </div>
@@ -48,10 +48,10 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
                 <!-- Date Time Input -->
                 <div class="space-y-2">
-                    <label for="datetime" class="block text-sm font-semibold text-slate-700">Date and Time</label>
+                    <label for="datetime" class="block text-sm font-semibold font-raleway text-slate-700">Date and Time</label>
                     <div class="relative group">
                         <input type="datetime-local" id="datetime" name="datetime" x-model="dateTime"
-                            class="cursor-pointer w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none font-medium text-slate-800"
+                            class="cursor-pointer w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none font-medium font-roboto text-slate-800"
                             required>
                     </div>
                 </div>
@@ -64,7 +64,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <p>Slide to navigate through the year <span class="font-bold text-blue-700"
+                        <p class="font-noto-sans">Slide to navigate through the year <span class="font-bold font-roboto text-blue-700"
                                 x-text="new Date(dateTime).getFullYear()"></span></p>
                     </div>
                 </div>
@@ -73,9 +73,9 @@
             <!-- Slider Container -->
             <div class="space-y-4">
                 <div
-                    class="flex justify-between items-center text-xs font-bold text-slate-400 uppercase tracking-wider">
+                    class="flex justify-between items-center text-xs font-bold font-raleway text-slate-400 uppercase tracking-wider">
                     <span>Jan 1</span>
-                    <span class="text-blue-600 bg-blue-50 px-3 py-1 rounded-full font-semibold border border-blue-100"
+                    <span class="text-blue-600 bg-blue-50 px-3 py-1 rounded-full font-semibold font-roboto border border-blue-100"
                         x-text="new Date(dateTime).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })"></span>
                     <span>Dec 31</span>
                 </div>
@@ -97,7 +97,7 @@
         <div
             class="flex flex-col items-center justify-center p-12 bg-white rounded-2xl border border-dashed border-slate-200">
             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
-            <p class="text-slate-400 text-sm font-medium">Loading celestial data...</p>
+            <p class="text-slate-400 text-sm font-medium font-raleway">Loading celestial data...</p>
         </div>
     </div>
 </div>

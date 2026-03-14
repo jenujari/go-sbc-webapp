@@ -6,7 +6,7 @@ run-infra:
 stop-infra:
 	podman compose down -v
 
-dev: run-infra	
+dev: run-infra
 	go tool air
 
 build:
