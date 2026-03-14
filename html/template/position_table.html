@@ -147,7 +147,20 @@
     {label: "Uttara Bhadrapada", start: 333.333333, end: 346.666666},
     {label: "Revati", start: 346.666666, end: 360}
   ];
-  const planetPalette = ["#2563eb", "#db2777", "#ea580c", "#0891b2", "#16a34a", "#7c3aed", "#dc2626", "#0f766e", "#9333ea", "#b45309"];
+  const planetColors = {
+    sun: "#f59e0b",
+    moon: "#38bdf8",
+    mercury: "#10b981",
+    venus: "#ec4899",
+    mars: "#ef4444",
+    jupiter: "#8b5cf6",
+    saturn: "#334155",
+    uranus: "#06b6d4",
+    neptune: "#6366f1",
+    pluto: "#7c2d12",
+    rahu: "#0f766e",
+    ketu: "#a16207"
+  };
 
   const size = 920;
   const cx = size / 2;
@@ -280,7 +293,7 @@
     svg.appendChild(createSvgEl("path", {
       d: donutPath(nakInner, nakOuter, segment.start, segment.end),
       fill: index % 2 === 0 ? "#fef3c7" : "#dbeafe",
-      stroke: "#ffffff",
+      stroke: "rgba(255, 130, 6, 1)",
       "stroke-width": 1.5
     }));
 
@@ -296,11 +309,11 @@
   });
 
   for (let deg = 0; deg < 360; deg += 30) {
-    const inner = polarToCartesian(signInner - 12, deg);
-    const outer = polarToCartesian(nakOuter + 8, deg);
+    const inner = polarToCartesian(signInner, deg);
+    const outer = polarToCartesian(orbitGuide, deg);
     svg.appendChild(createSvgEl("line", {
       x1: inner.x, y1: inner.y, x2: outer.x, y2: outer.y,
-      stroke: "#cbd5e1", "stroke-width": 1.5
+      stroke: "#ff6347", "stroke-width": 2
     }));
 
     const degreePoint = polarToCartesian(signInner - 34, deg === 360 ? 0 : deg);
@@ -359,7 +372,7 @@
     const angle = normalizeAngle(planet.Long + (tangentialOffset / planetRadius) * (180 / Math.PI));
     const anchor = polarToCartesian(isSun ? solarOrbitRadius : nakOuter + 3, angle);
     const position = polarToCartesian(planetRadius, angle);
-    const color = planetPalette[index % planetPalette.length];
+    const color = planetColors[planet.Name.toLowerCase()] || "#2563eb";
     const shortName = planet.Name.length > 2 ? planet.Name.slice(0, 2).toUpperCase() : planet.Name.toUpperCase();
     const group = createSvgEl("g", {cursor: "pointer"});
     const halo = createSvgEl("circle", {
