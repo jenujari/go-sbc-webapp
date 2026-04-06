@@ -60,11 +60,11 @@
     const size = 920;
     const center = size / 2;
     const orbitGuide = 430;
-    const signInner = 205;
-    const signOuter = 300;
-    const nakInner = 310;
-    const nakOuter = 372;
-    const solarOrbitRadius = 404;
+    const signInner = 140;
+    const signOuter = 240;
+    const nakInner = 252;
+    const nakOuter = 350;
+    const solarOrbitRadius = 396;
     const earthRadius = 76;
     const clusterThreshold = 6;
     const arcGen = d3.arc();
@@ -86,6 +86,10 @@
       x: Math.cos(degToRad(degrees)) * radius,
       y: -Math.sin(degToRad(degrees)) * radius
     });
+    const nakshatraLabelRotation = (degrees) => {
+      const angle = normalizeAngle(degrees);
+      return angle > 90 && angle < 270 ? 180 - angle : -angle;
+    };
 
     const clusteredPlanets = [...planets]
       .sort((a, b) => a.Long - b.Long)
@@ -192,13 +196,14 @@
         }))
         .attr("fill", (d, index) => index % 2 ? "#dbeafe" : "#fef3c7");
 
-      g.selectAll(".nakshatra-label")
+      const nakshatraLabels = g.selectAll(".nakshatra-label")
         .data(nakshatraSegments)
         .enter()
         .append("text")
         .attr("transform", (segment) => {
-          const point = pointAt((nakInner + nakOuter) / 2, (segment.start + segment.end) / 2);
-          return `translate(${point.x}, ${point.y})`;
+          const midAngle = (segment.start + segment.end) / 2;
+          const point = pointAt((nakInner + nakOuter) / 2, midAngle);
+          return `translate(${point.x}, ${point.y}) rotate(${nakshatraLabelRotation(midAngle)})`;
         })
         .attr("font-size", (segment) => segment.label.length > 12 ? 10 : 11)
         .attr("font-weight", 600)
@@ -227,6 +232,8 @@
         .attr("fill", "#475569")
         .attr("font-weight", 700)
         .text((degree) => `${degree}°`);
+
+      nakshatraLabels.raise();
 
       [signInner, signOuter, nakInner, nakOuter].forEach((radius) => {
         g.append("circle")
