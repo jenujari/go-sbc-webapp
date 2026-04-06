@@ -1,13 +1,13 @@
 services:
   sweapi:
-    image: swegrpc:latest
+    image: docker.io/jhon5456/swegrpc:latest
     ports:
       - "5678:5678"
-  webapi:
+  webapp:
     build:
       context: .
       dockerfile: Dockerfile
-    image: webapi:latest
+    image: docker.io/jhon5456/swewebapp:latest
     depends_on:
       - sweapi
     ports:
@@ -15,11 +15,11 @@ services:
     environment:
       - ENV=container
       - CONFIG_PATH=/app/config
-  webapi-dev:
+  webapp-dev:
     build:
       context: .
       dockerfile: dev.Dockerfile
-    image: webapi-dev:latest
+    image: swewebapp-dev:latest
     depends_on:
       - sweapi
     ports:
