@@ -12,14 +12,17 @@ dev: run-infra
 build:
 	podman compose build
 
-run-dev: build
-	podman compose up webapi-dev
+run-dev:
+	podman-compose up --build webapp-dev
 
 run-prod:
-	podman compose up -d webapi
+	podman compose up -d webapp
 
 grpc-ui:
 	podman run --rm --network=host -p 8080:8080 docker.io/fullstorydev/grpcui -plaintext localhost:5678
 
 build-and-push-container:
 	./scripts/build_and_push.sh
+
+jenkins-deploy:
+	./scripts/trigger_deploy.sh

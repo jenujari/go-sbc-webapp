@@ -33,3 +33,9 @@ jobs:
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
         make build-and-push-container
+
+    - name: deployment restart
+      env:
+        JENKINS_TOKEN: ${{ secrets.JENKINS_TOKEN }}
+      run: |
+        make jenkins-deploy
