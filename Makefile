@@ -23,3 +23,6 @@ grpc-ui:
 
 build-and-push-container:
 	./scripts/build_and_push.sh
+
+jenkins-deploy:
+	./scripts/trigger_deploy.sh
