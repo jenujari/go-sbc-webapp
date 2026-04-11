@@ -13,6 +13,7 @@ type SweGrpcClient interface {
 	Ping(ctx context.Context) (*proto.PingResponse, error)
 	GetPos(ctx context.Context, datetime string, planet string) (*proto.PosResponse, error)
 	Tithy(ctx context.Context, timestamp string) (*proto.TithyResponse, error)
+	FindConjunction(ctx context.Context, start, end, planet1, planet2 string, orb int32, step float64) (*proto.ConjunctionResponse, error)
 }
 
 type SweGrpcClientImpl struct {
@@ -43,4 +44,8 @@ func (c *SweGrpcClientImpl) GetPos(ctx context.Context, datetime string, planet 
 
 func (c *SweGrpcClientImpl) Tithy(ctx context.Context, timestamp string) (*proto.TithyResponse, error) {
 	return c.client.Tithy(ctx, timestamp)
+}
+
+func (c *SweGrpcClientImpl) FindConjunction(ctx context.Context, start, end, planet1, planet2 string, orb int32, step float64) (*proto.ConjunctionResponse, error) {
+	return c.client.FindConjunction(ctx, start, end, planet1, planet2, orb, step)
 }

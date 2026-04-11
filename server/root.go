@@ -36,6 +36,8 @@ func init() {
 	router.HandleFunc("/positions", positionsHandler)
 	router.HandleFunc("/tithy-table", tithyHandler)
 	router.HandleFunc("/tithies", tithyTableHandler)
+	router.HandleFunc("/planet-conjunction", conjunctionHandler)
+	router.HandleFunc("/planet-conjunctions", conjunctionSearchHandler)
 	router.HandleFunc("/", indexhandler)
 
 	server.Handler = GlobalRequestContextSetter(router)

@@ -1,0 +1,98 @@
+{{define "content"}}
+<div class="space-y-6">
+    <div class="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+        <div class="flex flex-col gap-3">
+            <span class="inline-flex w-fit rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold font-raleway uppercase tracking-wide text-blue-700 ring-1 ring-blue-200">
+                New Page
+            </span>
+            <h1 class="text-3xl font-bold font-playfair text-slate-900">Planet Conjustion Finder</h1>
+            <p class="text-sm font-medium font-noto-sans text-slate-500">Choose two planets and a date range to start exploring conjunctions.</p>
+        </div>
+    </div>
+
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <form
+            x-data="{
+                planet1: '{{ .defaultPlanet1 }}',
+                planet2: '{{ .defaultPlanet2 }}',
+                start: '{{ .defaultStart }}',
+                end: '{{ .defaultEnd }}',
+                get samePlanetError() {
+                    return this.planet1 === this.planet2;
+                },
+                get endBeforeStartError() {
+                    return !!this.start && !!this.end && this.end <= this.start;
+                },
+                get isValid() {
+                    return !this.samePlanetError && !this.endBeforeStartError;
+                }
+            }"
+            @submit="if (!isValid) $event.preventDefault()"
+            hx-post="/planet-conjunctions"
+            hx-target="#conjunction-result"
+            hx-indicator="#conjunction-loading"
+            hx-trigger="submit"
+            class="space-y-6">
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div class="space-y-2">
+                    <label for="planet1" class="block text-sm font-semibold font-raleway text-slate-700">Planet 1</label>
+                    <select id="planet1" name="planet1" x-model="planet1" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium font-roboto text-slate-800 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20">
+                        {{ range .planets }}
+                        <option value="{{ . }}" {{ if eq . $.defaultPlanet1 }}selected{{ end }}>{{ . }}</option>
+                        {{ end }}
+                    </select>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="planet2" class="block text-sm font-semibold font-raleway text-slate-700">Planet 2</label>
+                    <select id="planet2" name="planet2" x-model="planet2" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium font-roboto text-slate-800 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20">
+                        {{ range .planets }}
+                        <option value="{{ . }}" {{ if eq . $.defaultPlanet2 }}selected{{ end }}>{{ . }}</option>
+                        {{ end }}
+                    </select>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="start" class="block text-sm font-semibold font-raleway text-slate-700"> From</label>
+                    <input type="datetime-local" id="start" name="start" x-model="start" value="{{ .defaultStart }}" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium font-roboto text-slate-800 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" required>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="end" class="block text-sm font-semibold font-raleway text-slate-700"> To</label>
+                    <input type="datetime-local" id="end" name="end" x-model="end" :min="start" value="{{ .defaultEnd }}" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium font-roboto text-slate-800 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" required>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <p x-show="samePlanetError" x-cloak class="text-sm font-medium font-roboto text-red-600">
+                    Planet 1 and Planet 2 must be different.
+                </p>
+                <p x-show="endBeforeStartError" x-cloak class="text-sm font-medium font-roboto text-red-600">
+                    End / To must be after Start / From.
+                </p>
+            </div>
+
+            <div class="flex justify-end">
+                <button
+                    type="submit"
+                    :disabled="!isValid"
+                    :class="isValid ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-slate-300 text-slate-500 cursor-not-allowed'"
+                    class="inline-flex items-center rounded-xl px-5 py-3 text-sm font-semibold font-raleway shadow-sm transition-colors">
+                    Search
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div id="conjunction-loading" class="htmx-indicator rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="flex flex-col items-center justify-center py-6">
+            <div class="mb-4 h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
+            <p class="text-sm font-medium font-raleway text-slate-400">Searching conjunction data...</p>
+        </div>
+    </div>
+
+    <div id="conjunction-result" class="min-h-[120px] rounded-2xl border border-dashed border-slate-200 bg-slate-50/60 p-6">
+        <p class="text-sm font-medium font-raleway text-slate-400">Submit the form to see the posted values here.</p>
+    </div>
+</div>
+{{ end }}
