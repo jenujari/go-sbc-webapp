@@ -75,6 +75,8 @@ func tithyTableHandler(w http.ResponseWriter, r *http.Request) {
 			DateLabel:         day.Format("January 02, 2006"),
 			DateValue:         day.Format("2006-01-02"),
 			Timestamp:         timestamp.Format(time.RFC3339),
+			Weekday:           resp.GetWeekday(),
+			Nakshatra:         resp.GetNakshatra(),
 			TithyValue:        resp.GetTithy(),
 			DisplayPaksha:     getPaksha(resp.GetTithy()),
 			DisplayTithyValue: getDisplayTithyValue(resp.GetTithy()),
@@ -112,6 +114,8 @@ type TithyTableRecord struct {
 	DateLabel         string
 	DateValue         string
 	Timestamp         string
+	Weekday           string
+	Nakshatra         string
 	TithyValue        int32
 	DisplayPaksha     string
 	DisplayTithyValue int32

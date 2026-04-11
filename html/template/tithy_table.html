@@ -44,6 +44,8 @@
                     </div>
                     <div class="flex flex-col">
                         <span class="font-bold font-noto-serif text-slate-700">{{ .DateLabel }}</span>
+                        <span class="text-sm font-medium font-roboto text-slate-500">{{ .Weekday }}</span>
+                        <span class="text-sm font-medium font-roboto text-slate-500">{{ .Nakshatra }}</span>
                         {{ if eq .DateValue $.selectedDateValue }}
                         <span class="text-xs font-medium font-raleway uppercase tracking-wide text-blue-700">Selected Date</span>
                         {{ end }}
