@@ -1,6 +1,11 @@
 services:
   sweapi:
     image: docker.io/jhon5456/swegrpc:latest
+    profiles:
+      - infra
+      - dev
+      - prod
+      - build
     ports:
       - "5678:5678"
   webapp:
@@ -8,6 +13,9 @@ services:
       context: .
       dockerfile: Dockerfile
     image: docker.io/jhon5456/swewebapp:latest
+    profiles:
+      - prod
+      - build
     depends_on:
       - sweapi
     ports:
@@ -20,6 +28,9 @@ services:
       context: .
       dockerfile: dev.Dockerfile
     image: swewebapp-dev:latest
+    profiles:
+      - dev
+      - build
     depends_on:
       - sweapi
     ports:

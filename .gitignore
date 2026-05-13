@@ -31,3 +31,5 @@ go.work.sum
 # .idea/
 # .vscode/
 tmp/main
+db/timescaldb_example.sql
+.codex
