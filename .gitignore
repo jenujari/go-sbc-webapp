@@ -33,3 +33,4 @@ go.work.sum
 tmp/main
 db/timescaldb_example.sql
 .codex
+GEMINI.md
