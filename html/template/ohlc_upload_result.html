@@ -1,0 +1,17 @@
+{{ define "ohlc_upload_result.html" }}
+{{ if .Errors }}
+<div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+  <div class="font-semibold">Import completed with warnings</div>
+  <div class="mt-1">Rows inserted/updated: <strong>{{ .Inserted }}</strong>. Rows skipped: <strong>{{ .Skipped }}</strong>.</div>
+  <ul class="mt-3 list-disc space-y-1 pl-5">
+    {{ range .Errors }}<li>{{ . }}</li>{{ end }}
+  </ul>
+  {{ if ge (len .Errors) 20 }}<p class="mt-2 text-xs">Only first 20 row errors are shown.</p>{{ end }}
+</div>
+{{ else }}
+<div class="rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-800">
+  <div class="font-semibold">Import successful</div>
+  <div class="mt-1">Rows inserted/updated: <strong>{{ .Inserted }}</strong>. Rows skipped: <strong>{{ .Skipped }}</strong>.</div>
+</div>
+{{ end }}
+{{ end }}

@@ -5,9 +5,11 @@ go 1.26.0
 tool github.com/sqlc-dev/sqlc/cmd/sqlc
 
 require (
+	github.com/jackc/pgx/v5 v5.9.2
 	github.com/jenujari/go-swe-api v0.0.0-20260511000633-7b7b68e2cd34
 	github.com/jenujari/planets-lib v0.0.0-20260509122339-6bc8f7a018d4
 	github.com/jenujari/runtime-context v0.0.0-20250912231647-fa052a1c1da3
+	github.com/joho/godotenv v1.5.1
 	github.com/spf13/viper v1.21.0
 	google.golang.org/grpc v1.81.0
 )
@@ -120,11 +122,9 @@ require (
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/pgtype v1.14.0 // indirect
 	github.com/jackc/pgx/v4 v4.18.2 // indirect
-	github.com/jackc/pgx/v5 v5.9.2 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
-	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/k0kubun/pp v2.3.0+incompatible // indirect
 	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect

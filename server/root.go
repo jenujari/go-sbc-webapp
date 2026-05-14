@@ -38,6 +38,8 @@ func init() {
 	router.HandleFunc("/tithies", tithyTableHandler)
 	router.HandleFunc("/planet-conjunction", conjunctionHandler)
 	router.HandleFunc("/planet-conjunctions", conjunctionSearchHandler)
+	router.HandleFunc("/ohlc-upload", ohlcUploadPageHandler)
+	router.HandleFunc("/ohlc-upload/import", ohlcUploadHandler)
 	router.HandleFunc("/", indexhandler)
 
 	server.Handler = GlobalRequestContextSetter(router)

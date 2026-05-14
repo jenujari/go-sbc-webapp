@@ -1,9 +1,12 @@
 package config
 
 import (
+	"fmt"
 	"log"
 	"os"
+	"strings"
 
+	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
@@ -13,6 +16,8 @@ var (
 )
 
 func init() {
+	loadDotEnv()
+
 	var confName string
 	env := os.Getenv("ENV")
 
@@ -52,6 +57,51 @@ func init() {
 	if err != nil {
 		log.Fatalf("Error unmarshaling config: %v", err)
 	}
+
+	if err := applyDBEnv(cfg); err != nil {
+		logger.Fatalf("database configuration error: %v", err)
+	}
+}
+
+func loadDotEnv() {
+	// Load uses existing OS environment variables as the source of truth and only
+	// fills missing values from .env when the file exists.
+	if err := godotenv.Load(); err != nil && !os.IsNotExist(err) {
+		log.Printf("Warning: unable to load .env file: %v", err)
+	}
+}
+
+func applyDBEnv(cfg *Config) error {
+	cfg.DBConfig = DBConfig{
+		Host:     strings.TrimSpace(os.Getenv("POSTGRES_HOST")),
+		Port:     strings.TrimSpace(os.Getenv("POSTGRES_PORT")),
+		User:     strings.TrimSpace(os.Getenv("POSTGRES_USER")),
+		Password: os.Getenv("POSTGRES_PASSWORD"),
+		Name:     strings.TrimSpace(os.Getenv("POSTGRES_DB")),
+		SSLMode:  strings.TrimSpace(os.Getenv("POSTGRES_SSLMODE")),
+	}
+
+	if cfg.DBConfig.SSLMode == "" {
+		cfg.DBConfig.SSLMode = "disable"
+	}
+
+	missing := make([]string, 0)
+	for key, value := range map[string]string{
+		"POSTGRES_HOST":     cfg.DBConfig.Host,
+		"POSTGRES_PORT":     cfg.DBConfig.Port,
+		"POSTGRES_USER":     cfg.DBConfig.User,
+		"POSTGRES_PASSWORD": cfg.DBConfig.Password,
+		"POSTGRES_DB":       cfg.DBConfig.Name,
+	} {
+		if value == "" {
+			missing = append(missing, key)
+		}
+	}
+	if len(missing) > 0 {
+		return fmt.Errorf("missing required env vars: %s. Create .env or export them in the OS environment", strings.Join(missing, ", "))
+	}
+
+	return nil
 }
 
 func GetLogger() *log.Logger {
