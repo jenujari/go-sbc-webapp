@@ -1,17 +1,76 @@
 services:
+  timescaledb:
+    image: docker.io/timescale/timescaledb:latest-pg18
+    restart: unless-stopped
+    volumes:
+      - sbc_app_pgdata:/pgdata
+    environment:
+      - PGDATA=/pgdata
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?set in .env}
+      - POSTGRES_USER=${POSTGRES_USER:?set in .env}
+      - POSTGRES_DB=${POSTGRES_DB:?set in .env}
+    profiles:
+      - infra
+      - dev
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    ports:
+      - 15432:5432
+    networks:
+      - app_network
+  adminer:
+    image: docker.io/adminer:5-standalone
+    restart: unless-stopped
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+    ports:
+      - 8090:8080
+    networks:
+      - app_network
+    profiles:
+      - infra
+      - dev
   sweapi:
     image: docker.io/jhon5456/swegrpc:latest
+    restart: unless-stopped
+    profiles:
+      - infra
+      - dev
+      - prod
+      - build
     ports:
       - "5678:5678"
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 5678 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
+    networks:
+      - app_network
   webapp:
     build:
       context: .
       dockerfile: Dockerfile
     image: docker.io/jhon5456/swewebapp:latest
+    profiles:
+      - prod
+      - build
+    restart: unless-stopped
     depends_on:
-      - sweapi
+      sweapi:
+        condition: service_healthy
+      timescaledb:
+        condition: service_healthy
     ports:
       - "8081:8081"
+    networks:
+      - app_network
     environment:
       - ENV=container
       - CONFIG_PATH=/app/config
@@ -20,12 +79,28 @@ services:
       context: .
       dockerfile: dev.Dockerfile
     image: swewebapp-dev:latest
+    profiles:
+      - dev
+      - build
+    restart: unless-stopped
     depends_on:
-      - sweapi
+      sweapi:
+        condition: service_healthy
+      timescaledb:
+        condition: service_healthy
     ports:
       - "8081:8081"
     volumes:
       - .:/app
+    networks:
+      - app_network
     environment:
       - ENV=container
       - CONFIG_PATH=/app/config
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  sbc_app_pgdata:
