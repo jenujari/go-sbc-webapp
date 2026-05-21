@@ -26,16 +26,16 @@
         return this.addDays(this.anchorDate, 45);
     }
 }">
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 lg:p-8 transition-all hover:shadow-md">
+    <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-6 lg:p-8 transition-all hover:shadow-md">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
             <div>
-                <h1 class="text-2xl font-bold font-playfair text-slate-900 tracking-tight">Tithy Table</h1>
-                <p class="text-slate-500 text-sm mt-1 font-noto-sans">Browse daily tithy values around any selected date.</p>
+                <h1 class="text-2xl font-bold font-cinzel text-stone-900 tracking-tight">Tithy Table</h1>
+                <p class="text-stone-500 text-sm mt-1 font-jakarta">Browse daily tithy values around any selected date.</p>
             </div>
 
             <div
-                class="flex items-center space-x-2 text-sm font-medium font-raleway text-slate-600 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200">
-                <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                class="flex items-center space-x-2 text-sm font-medium font-jakarta text-stone-600 bg-stone-50 px-3 py-1.5 rounded-full border border-stone-200">
+                <span class="w-2 h-2 rounded-full bg-stone-500 animate-pulse"></span>
                 <span>Daily Tithy Lookup</span>
             </div>
         </div>
@@ -46,22 +46,22 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
                 <div class="space-y-2">
-                    <label for="anchor-date" class="block text-sm font-semibold font-raleway text-slate-700">Base Date</label>
+                    <label for="anchor-date" class="block text-sm font-semibold font-jakarta text-stone-700">Base Date</label>
                     <div class="relative group">
                         <input type="date" id="anchor-date" name="anchor_date" x-model="anchorDate" @change="resetSlider()"
-                            class="cursor-pointer w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none font-medium font-roboto text-slate-800"
+                            class="cursor-pointer w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-stone-500/20 focus:border-stone-500 transition-all outline-none font-medium font-jakarta text-stone-800"
                             required>
                     </div>
                 </div>
 
                 <div class="hidden md:block">
                     <div
-                        class="flex items-center space-x-4 text-sm text-slate-500 bg-blue-50/50 p-3 rounded-xl border border-blue-100">
-                        <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="flex items-center space-x-4 text-sm text-stone-500 bg-stone-50/50 p-3 rounded-xl border border-stone-100">
+                        <svg class="w-5 h-5 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <p class="font-noto-sans">Selected day <span class="font-bold font-roboto text-blue-700"
+                        <p class="font-jakarta">Selected day <span class="font-bold font-jakarta text-stone-700"
                                 x-text="selectedDate"></span> with a ±45 day slider range.</p>
                     </div>
                 </div>
@@ -69,16 +69,16 @@
 
             <div class="space-y-4">
                 <div
-                    class="flex justify-between items-center text-xs font-bold font-raleway text-slate-400 uppercase tracking-wider">
+                    class="flex justify-between items-center text-xs font-bold font-jakarta text-stone-400 uppercase tracking-wider">
                     <span x-text="minDate"></span>
-                    <span class="text-blue-600 bg-blue-50 px-3 py-1 rounded-full font-semibold font-roboto border border-blue-100"
+                    <span class="text-stone-600 bg-stone-50 px-3 py-1 rounded-full font-semibold font-jakarta border border-stone-100"
                         x-text="selectedDate"></span>
                     <span x-text="maxDate"></span>
                 </div>
 
                 <div class="relative h-6 flex items-center group">
                     <input type="range" id="tithy-slider" min="-45" max="45" step="1" x-model="sliderOffset"
-                        class="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600 hover:accent-blue-700 transition-all">
+                        class="w-full h-2 bg-stone-100 rounded-lg appearance-none cursor-pointer accent-stone-600 hover:accent-stone-700 transition-all">
                 </div>
             </div>
 
@@ -88,9 +88,9 @@
 
     <div id="tithy-result" class="min-h-[200px] transition-all duration-300">
         <div
-            class="flex flex-col items-center justify-center p-12 bg-white rounded-2xl border border-dashed border-slate-200">
-            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
-            <p class="text-slate-400 text-sm font-medium font-raleway">Loading tithy data...</p>
+            class="flex flex-col items-center justify-center p-12 bg-white rounded-2xl border border-dashed border-stone-200">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-stone-600 mb-4"></div>
+            <p class="text-stone-400 text-sm font-medium font-jakarta">Loading tithy data...</p>
         </div>
     </div>
 </div>

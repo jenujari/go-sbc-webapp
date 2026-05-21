@@ -1,0 +1,107 @@
+{{ $view := .shadbala }}
+{{ if .shadbalaError }}
+<div class="rounded-2xl border border-red-200 bg-red-50 p-6 text-red-700 font-medium font-jakarta">
+    {{ .shadbalaError }}
+</div>
+{{ else if not $view.Planets }}
+<div class="rounded-2xl border border-stone-200/60 bg-white p-10 text-center shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
+    <p class="font-serif text-xl text-stone-900 mb-2">No Shadbala Data Found</p>
+    <p class="text-sm text-stone-500 font-jakarta">No planetary strength records were returned for {{ .displayDate }}.</p>
+</div>
+{{ else }}
+<div class="mb-8 text-center">
+    <p class="text-xs text-stone-400 font-bold tracking-widest uppercase">Calculated For</p>
+    <p class="mt-2 text-sm sm:text-base text-stone-600 font-medium font-jakarta">{{ .displayDate }}</p>
+</div>
+
+<div class="flex flex-col gap-4" x-data="{ openPlanet: '{{ (index $view.Planets 0).ID }}', query: '', sortBy: 'order' }">
+    <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between mb-6">
+        <input type="search" x-model="query" placeholder="Filter planets..." class="w-full sm:w-72 px-4 py-3 bg-white border border-stone-200 rounded-xl focus:ring-2 focus:ring-stone-500/20 focus:border-stone-500 transition-all outline-none font-medium font-jakarta text-stone-800">
+        <select x-model="sortBy" class="w-full sm:w-48 px-4 py-3 bg-white border border-stone-200 rounded-xl focus:ring-2 focus:ring-stone-500/20 focus:border-stone-500 transition-all outline-none font-medium font-jakarta text-stone-800">
+            <option value="order">Default order</option>
+            <option value="power">Power view</option>
+            <option value="name">Name view</option>
+        </select>
+    </div>
+
+    {{ range $index, $planet := .shadbala.Planets }}
+    <article x-show="'{{ $planet.Name }}'.toLowerCase().includes(query.toLowerCase())" x-transition :style="sortBy === 'power' ? 'order: {{ $planet.PowerSortOrder }}' : (sortBy === 'name' ? 'order: {{ $planet.NameSortOrder }}' : 'order: {{ $index }}')" class="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.08)] transition-all duration-300 border border-stone-200/60 overflow-hidden relative">
+        <button type="button" @click="openPlanet = openPlanet === '{{ $planet.ID }}' ? '' : '{{ $planet.ID }}'" class="w-full flex items-center justify-between p-4 sm:p-5 md:px-8 hover:bg-stone-50/50 transition-colors focus:outline-none focus-visible:bg-stone-50/50 group">
+            <div class="flex items-center gap-4 sm:gap-6">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 shrink-0 flex items-center justify-center rounded-full bg-stone-50 text-stone-800 text-2xl sm:text-3xl font-serif shadow-sm border border-stone-200/60">{{ $planet.Symbol }}</div>
+                <h3 class="font-serif text-xl sm:text-2xl font-medium tracking-wide text-stone-900 text-left">{{ $planet.Name }}</h3>
+            </div>
+            <div class="flex items-center gap-4 sm:gap-8 w-[40%] min-w-[120px] max-w-[240px]">
+                <div class="flex-1 pointer-events-none hidden sm:block">
+                    <div class="flex justify-between items-end text-[10px] sm:text-xs mb-1.5 px-0.5">
+                        <span class="text-stone-500/70 uppercase tracking-widest font-semibold">Total Power</span>
+                        <span class="font-bold text-stone-900/80">{{ printf "%.0f" $planet.Total }}%</span>
+                    </div>
+                    <div class="w-full bg-stone-200 overflow-hidden h-1.5 rounded-full"><div class="h-full rounded-full bg-stone-800 transition-all duration-700" style="width: {{ printf "%.0f" $planet.Total }}%"></div></div>
+                </div>
+                <div class="flex-1 pointer-events-none sm:hidden">
+                    <div class="text-right"><span class="text-[10px] uppercase tracking-wider text-stone-500 block mb-0.5">Total</span><span class="font-bold text-sm text-stone-900">{{ printf "%.0f" $planet.Total }}%</span></div>
+                </div>
+                <svg :class="openPlanet === '{{ $planet.ID }}' ? 'rotate-180 text-stone-900' : 'text-stone-400'" class="w-5 h-5 shrink-0 group-hover:text-stone-900 transition-all duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+            </div>
+        </button>
+
+        <div x-show="openPlanet === '{{ $planet.ID }}'" class="overflow-hidden">
+            <div class="px-4 sm:px-5 md:px-8 pb-8 pt-2">
+                <div class="h-px w-full bg-gradient-to-r from-transparent via-stone-200 to-transparent mb-8"></div>
+                <div class="flex flex-col lg:flex-row gap-8 lg:gap-16">
+                    <div class="flex-1">
+                        <h4 class="font-serif text-lg mb-6 text-stone-900 flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-stone-400"></span>Detailed Strength Analysis</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-6">
+                            {{ template "balaBar" dict "Label" "Uchabal" "Value" $planet.UchchaBala }}
+                            {{ template "balaBar" dict "Label" "Udaybal" "Value" $planet.UdayBala }}
+                            {{ template "balaBar" dict "Label" "Vakrabal" "Value" $planet.VakraBala }}
+                            {{ template "balaBar" dict "Label" "NavanshBal" "Value" $planet.NavamshaBala }}
+                            {{ template "balaBar" dict "Label" "Kshetrabal" "Value" $planet.KshetraBala }}
+                            <div class="sm:col-span-2 mt-2 pt-4 border-t border-stone-200/60">
+                                {{ template "balaBarTotal" dict "Label" "Total Power" "Value" $planet.Total }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-80 shrink-0">
+                        <div class="bg-stone-50/50 rounded-2xl p-6 border border-stone-200/60 h-full shadow-[inset_0_2px_10px_rgba(0,0,0,0.02)]">
+                            <h4 class="font-serif text-lg mb-5 text-stone-900 flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-stone-400"></span>Properties</h4>
+                            <div class="space-y-1">
+                                <div class="flex justify-between items-center py-2 border-b border-stone-200/60"><span class="text-sm text-stone-500 font-medium">Zodiac Sign</span><span class="text-sm font-semibold text-stone-900/90 text-right">{{ $planet.Sign }}</span></div>
+                                <div class="flex justify-between items-center py-2 border-b border-stone-200/60"><span class="text-sm text-stone-500 font-medium">Nakshatra</span><span class="text-sm font-semibold text-stone-900/90 text-right">{{ $planet.Nakshatra }}</span></div>
+                                <div class="flex justify-between items-center py-2 border-b border-stone-200/60"><span class="text-sm text-stone-500 font-medium">Daily Speed</span><span class="text-sm font-semibold text-stone-900/90 text-right">{{ $planet.Speed }}</span></div>
+                                <div class="flex justify-between items-center py-2 border-b border-stone-200/60"><span class="text-sm text-stone-500 font-medium">Speed Category</span><span class="text-sm font-semibold text-stone-900/90 text-right">{{ $planet.SpeedCategory }}</span></div>
+                                <div class="flex justify-between items-center py-2 border-b border-stone-200/60"><span class="text-sm text-stone-500 font-medium">Vedha</span><span class="text-sm font-semibold text-stone-900/90 text-right">{{ $planet.Vedha }}</span></div>
+                                <div class="flex justify-between items-center py-2 border-b border-stone-200/60"><span class="text-sm text-stone-500 font-medium">Longitude DMS</span><span class="text-sm font-semibold text-stone-900/90 text-right">{{ $planet.LongitudeDMS }}</span></div>
+                                <div class="flex justify-between items-center py-2 border-b border-stone-200/60"><span class="text-sm text-stone-500 font-medium">Latitude DMS</span><span class="text-sm font-semibold text-stone-900/90 text-right">{{ $planet.LatitudeDMS }}</span></div>
+                                <div class="flex justify-between items-center py-2 border-b border-stone-200/60"><span class="text-sm text-stone-500 font-medium">Sign Lord</span><span class="text-sm font-semibold text-stone-900/90 text-right">{{ $planet.SignLord }}</span></div>
+                                <div class="flex justify-between items-center py-2 border-b border-stone-200/60"><span class="text-sm text-stone-500 font-medium">Sign Lordship</span><span class="text-sm font-semibold text-stone-900/90 text-right">{{ $planet.SignLordship }}</span></div>
+                                <div class="flex justify-between items-center py-2 border-b border-stone-200/60"><span class="text-sm text-stone-500 font-medium">Navamsa Sign</span><span class="text-sm font-semibold text-stone-900/90 text-right">{{ $planet.NavamsaSign }}</span></div>
+                                <div class="flex justify-between items-center py-2 border-b border-stone-200/60"><span class="text-sm text-stone-500 font-medium">Vargottama</span><span class="text-sm font-semibold text-stone-900/90 text-right">{{ $planet.Vargottama }}</span></div>
+                                <div class="flex justify-between items-center py-2"><span class="text-sm text-stone-500 font-medium">State</span><span class="px-2 py-0.5 rounded-md text-xs font-bold tracking-wide uppercase {{ if $planet.Retrograde }}bg-rose-100 text-rose-700{{ else }}bg-emerald-100 text-emerald-700{{ end }}">{{ $planet.State }}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+    {{ end }}
+</div>
+
+<div class="mt-16 text-center text-xs text-stone-400 font-medium tracking-widest uppercase">Cosmic Alignments</div>
+{{ end }}
+
+{{ define "balaBar" }}
+<div class="flex flex-col w-full">
+    <div class="flex justify-between items-center text-sm mb-2"><span class="text-stone-500 font-medium tracking-wide">{{ .Label }}</span><span class="font-semibold text-stone-900/90">{{ printf "%.0f" .Value }}%</span></div>
+    <div class="w-full bg-stone-200 overflow-hidden h-2 rounded-full"><div class="h-full rounded-full bg-stone-500 transition-all duration-700" style="width: {{ printf "%.0f" .Value }}%"></div></div>
+</div>
+{{ end }}
+
+{{ define "balaBarTotal" }}
+<div class="flex flex-col w-full">
+    <div class="flex justify-between items-center text-sm mb-2"><span class="text-stone-500 font-medium tracking-wide">{{ .Label }}</span><span class="font-semibold text-stone-900/90">{{ printf "%.0f" .Value }}%</span></div>
+    <div class="w-full bg-stone-200 overflow-hidden h-2 rounded-full"><div class="h-full rounded-full bg-stone-800 transition-all duration-700" style="width: {{ printf "%.0f" .Value }}%"></div></div>
+</div>
+{{ end }}

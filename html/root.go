@@ -3,6 +3,7 @@ package html
 import (
 	"embed"
 	"encoding/json"
+	"errors"
 	"html/template"
 	"io/fs"
 	"time"
@@ -64,6 +65,21 @@ func getFuncMap() template.FuncMap {
 			return template.JS("[]")
 		}
 		return template.JS(b)
+	}
+
+	funcMap["dict"] = func(values ...any) (map[string]any, error) {
+		if len(values)%2 != 0 {
+			return nil, errors.New("dict requires an even number of arguments")
+		}
+		dict := make(map[string]any, len(values)/2)
+		for i := 0; i < len(values); i += 2 {
+			key, ok := values[i].(string)
+			if !ok {
+				return nil, errors.New("dict keys must be strings")
+			}
+			dict[key] = values[i+1]
+		}
+		return dict, nil
 	}
 
 	return funcMap

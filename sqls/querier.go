@@ -13,7 +13,9 @@ type Querier interface {
 	DeleteOLHC(ctx context.Context, arg DeleteOLHCParams) error
 	GetOLHC(ctx context.Context, arg GetOLHCParams) (TblOhlc, error)
 	ListOLHCs(ctx context.Context) ([]TblOhlc, error)
+	ListTickers(ctx context.Context) ([]TblTicker, error)
 	UpdateOLHC(ctx context.Context, arg UpdateOLHCParams) error
+	UpsertOLHC(ctx context.Context, arg UpsertOLHCParams) (int64, error)
 }
 
 var _ Querier = (*Queries)(nil)

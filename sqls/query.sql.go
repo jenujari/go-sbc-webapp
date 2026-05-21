@@ -126,6 +126,38 @@ func (q *Queries) ListOLHCs(ctx context.Context) ([]TblOhlc, error) {
 	return items, nil
 }
 
+const listTickers = `-- name: ListTickers :many
+SELECT id, name, "desc", full_name, exchange
+FROM tbl_ticker
+ORDER BY name
+`
+
+func (q *Queries) ListTickers(ctx context.Context) ([]TblTicker, error) {
+	rows, err := q.db.Query(ctx, listTickers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []TblTicker{}
+	for rows.Next() {
+		var i TblTicker
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Desc,
+			&i.FullName,
+			&i.Exchange,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateOLHC = `-- name: UpdateOLHC :exec
 UPDATE tbl_ohlc
   set o = $3,
@@ -157,4 +189,44 @@ func (q *Queries) UpdateOLHC(ctx context.Context, arg UpdateOLHCParams) error {
 		arg.V,
 	)
 	return err
+}
+
+const upsertOLHC = `-- name: UpsertOLHC :execrows
+INSERT INTO tbl_ohlc (
+  day, ticker_id, o, h, l, c, v
+) VALUES (
+  $1, $2, $3, $4, $5, $6, $7
+)
+ON CONFLICT (day, ticker_id) DO UPDATE SET
+  o = EXCLUDED.o,
+  h = EXCLUDED.h,
+  l = EXCLUDED.l,
+  c = EXCLUDED.c,
+  v = EXCLUDED.v
+`
+
+type UpsertOLHCParams struct {
+	Day      pgtype.Timestamptz `db:"day" json:"day"`
+	TickerID int16              `db:"ticker_id" json:"ticker_id"`
+	O        *float64           `db:"o" json:"o"`
+	H        *float64           `db:"h" json:"h"`
+	L        *float64           `db:"l" json:"l"`
+	C        *float64           `db:"c" json:"c"`
+	V        *float64           `db:"v" json:"v"`
+}
+
+func (q *Queries) UpsertOLHC(ctx context.Context, arg UpsertOLHCParams) (int64, error) {
+	result, err := q.db.Exec(ctx, upsertOLHC,
+		arg.Day,
+		arg.TickerID,
+		arg.O,
+		arg.H,
+		arg.L,
+		arg.C,
+		arg.V,
+	)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
 }

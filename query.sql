@@ -26,3 +26,21 @@ WHERE day = $1 and ticker_id = $2;
 -- name: DeleteOLHC :exec
 DELETE FROM tbl_ohlc
 WHERE day = $1 and ticker_id = $2;
+
+-- name: ListTickers :many
+SELECT id, name, "desc", full_name, exchange
+FROM tbl_ticker
+ORDER BY name;
+
+-- name: UpsertOLHC :execrows
+INSERT INTO tbl_ohlc (
+  day, ticker_id, o, h, l, c, v
+) VALUES (
+  $1, $2, $3, $4, $5, $6, $7
+)
+ON CONFLICT (day, ticker_id) DO UPDATE SET
+  o = EXCLUDED.o,
+  h = EXCLUDED.h,
+  l = EXCLUDED.l,
+  c = EXCLUDED.c,
+  v = EXCLUDED.v;
