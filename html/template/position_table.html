@@ -1,12 +1,12 @@
 <div
   x-data="{ activeTab: 'wheel' }"
-  class="bg-white rounded-2xl border border-slate-200 p-6 lg:p-8 shadow-sm transition-all hover:shadow-md animate-in fade-in slide-in-from-bottom-4 duration-500"
+  class="bg-white rounded-2xl border border-stone-200 p-6 lg:p-8 shadow-sm transition-all hover:shadow-md animate-in fade-in slide-in-from-bottom-4 duration-500"
 >
   <div class="flex items-center justify-between mb-8">
     <div class="flex items-center space-x-3">
-      <div class="p-2.5 bg-blue-50 rounded-xl border border-blue-100">
+      <div class="p-2.5 bg-stone-50 rounded-xl border border-stone-100">
         <svg
-          class="w-6 h-6 text-blue-600"
+          class="w-6 h-6 text-stone-600"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -21,18 +21,18 @@
       </div>
       <div>
         <h3
-          class="text-lg font-bold font-noto-serif text-slate-900 leading-tight"
+          class="text-lg font-bold font-cinzel text-stone-900 leading-tight"
         >
           Celestial Snapshot
         </h3>
-        <p class="text-sm text-slate-500 font-medium font-roboto">
+        <p class="text-sm text-stone-500 font-medium font-jakarta">
           {{.displayDate}}
         </p>
       </div>
     </div>
     <button
       type="button"
-      class="text-slate-400 hover:text-slate-600 transition-colors"
+      class="text-stone-400 hover:text-stone-600 transition-colors"
     >
       <svg
         class="w-5 h-5"
@@ -51,21 +51,21 @@
   </div>
 
   <div
-    class="mb-6 flex items-center rounded-xl border border-slate-200 bg-slate-50 p-1"
+    class="mb-6 flex items-center rounded-xl border border-stone-200 bg-stone-50 p-1"
   >
     <button
       type="button"
       @click="activeTab = 'wheel'"
-      :class="activeTab === 'wheel' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'"
-      class="flex-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold font-raleway transition-colors"
+      :class="activeTab === 'wheel' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-700'"
+      class="flex-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold font-jakarta transition-colors"
     >
       Wheel
     </button>
     <button
       type="button"
       @click="activeTab = 'table'"
-      :class="activeTab === 'table' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'"
-      class="flex-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold font-raleway transition-colors"
+      :class="activeTab === 'table' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-700'"
+      class="flex-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold font-jakarta transition-colors"
     >
       Table
     </button>
@@ -74,28 +74,28 @@
   <section
     x-show="activeTab === 'wheel'"
     x-transition.opacity
-    class="rounded-2xl border border-slate-100 bg-slate-50/60 p-4 lg:p-6"
+    class="rounded-2xl border border-stone-100 bg-stone-50/60 p-4 lg:p-6"
   >
     <div
       class="mb-5 flex flex-col gap-2 md:flex-row md:items-end md:justify-between"
     >
       <div>
-        <h4 class="text-lg font-bold font-noto-serif text-slate-900">
+        <h4 class="text-lg font-bold font-cinzel text-stone-900">
           Rashi And Nakshatra Wheel
         </h4>
-        <p class="text-sm font-medium font-raleway text-slate-500">
+        <p class="text-sm font-medium font-jakarta text-stone-500">
           Inner ring shows 12 signs in 30° slices. Outer ring shows 28 nakshatra
           divisions including Abhijit.
         </p>
       </div>
-      <div class="text-xs font-medium font-raleway text-slate-400">
+      <div class="text-xs font-medium font-jakarta text-stone-400">
         Planet placement uses longitude for angle and latitude for radial
         offset.
       </div>
     </div>
     <div
       data-astro-wheel-root
-      class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 lg:p-6"
+      class="relative overflow-hidden rounded-2xl border border-stone-200/60 bg-white p-3 lg:p-6"
     >
       <svg
         id="astro-wheel"
@@ -106,7 +106,7 @@
       ></svg>
       <div
         id="astro-wheel-tooltip"
-        class="pointer-events-none absolute hidden rounded-xl border border-slate-200 bg-white/95 px-3 py-2 text-sm shadow-xl ring-1 ring-slate-100 backdrop-blur-sm"
+        class="pointer-events-none absolute hidden rounded-xl border border-stone-200 bg-white/95 px-3 py-2 text-sm shadow-xl ring-1 ring-stone-100 backdrop-blur-sm"
       ></div>
     </div>
     <input type="hidden" id="planets-data" value="{{toJsonJS .planets}}" />
@@ -115,12 +115,12 @@
   <section
     x-show="activeTab === 'table'"
     x-transition.opacity
-    class="rounded-2xl border border-slate-100"
+    class="rounded-2xl border border-stone-100"
   >
-    <div class="overflow-hidden rounded-xl border border-slate-100">
+    <div class="overflow-hidden rounded-xl border border-stone-100">
       <table class="w-full text-left text-sm">
-        <thead class="bg-slate-50/50">
-          <tr class="text-slate-500 font-semibold font-raleway">
+        <thead class="bg-stone-50/50">
+          <tr class="text-stone-500 font-semibold font-jakarta">
             <th class="py-4 px-4">Planet</th>
             <th class="py-4 px-4 text-right">Longitude</th>
             <th class="py-4 px-4 text-right">Latitude</th>
@@ -129,38 +129,38 @@
             <th class="py-4 px-4 text-right">Nakshatra</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-50">
+        <tbody class="divide-y divide-stone-50">
           {{ range .planets }}
-          <tr class="group hover:bg-slate-50/30 transition-colors">
+          <tr class="group hover:bg-stone-50/30 transition-colors">
             <td class="py-4 px-4">
               <div class="flex items-center space-x-3">
-                <span class="font-bold font-noto-serif text-slate-700"
+                <span class="font-bold font-cinzel text-stone-700"
                   >{{ .Name }}</span
                 >
               </div>
             </td>
             <td
-              class="py-4 px-4 text-right font-roboto text-slate-600 tracking-tight"
+              class="py-4 px-4 text-right font-jakarta text-stone-600 tracking-tight"
             >
               {{ .Longitude }}
             </td>
             <td
-              class="py-4 px-4 text-right font-roboto text-slate-600 tracking-tight"
+              class="py-4 px-4 text-right font-jakarta text-stone-600 tracking-tight"
             >
               {{ .Latitude }}
             </td>
             <td
-              class="py-4 px-4 text-right font-roboto text-slate-600 tracking-tight"
+              class="py-4 px-4 text-right font-jakarta text-stone-600 tracking-tight"
             >
               {{ .IsRetrograde }}
             </td>
             <td
-              class="py-4 px-4 text-right font-roboto text-slate-600 tracking-tight"
+              class="py-4 px-4 text-right font-jakarta text-stone-600 tracking-tight"
             >
               {{ .Sign }}
             </td>
             <td
-              class="py-4 px-4 text-right font-roboto text-slate-600 tracking-tight"
+              class="py-4 px-4 text-right font-jakarta text-stone-600 tracking-tight"
             >
               {{ .Nakshatra }}
             </td>
@@ -172,11 +172,11 @@
   </section>
 
   <div class="mt-6 flex items-center justify-center space-x-4">
-    <span class="text-xs text-slate-400 font-medium font-raleway"
+    <span class="text-xs text-stone-400 font-medium font-jakarta"
       >Data source: Swiss Ephemeris</span
     >
-    <span class="w-1 h-1 rounded-full bg-slate-200"></span>
-    <span class="text-xs text-slate-400 font-medium font-raleway"
+    <span class="w-1 h-1 rounded-full bg-stone-200"></span>
+    <span class="text-xs text-stone-400 font-medium font-jakarta"
       >Precision: High</span
     >
   </div>
