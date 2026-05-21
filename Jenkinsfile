@@ -18,6 +18,15 @@ pipeline {
             }
         }
 
+        stage('Unit Tests') {
+            steps {
+                sh '''
+                    echo "Test using go 1.26 alpine image..."
+                    podman run --rm -v .:/workspace -w /workspace docker.io/golang:1.26-alpine go test ./...
+                '''
+            }
+        }
+
 
         stage('Validate branch is main before build') {
             steps {

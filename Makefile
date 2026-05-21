@@ -50,3 +50,6 @@ migrate-up:
 
 migrate-down:
 	go run -tags postgres github.com/golang-migrate/migrate/v4/cmd/migrate -database $(POSTGRESQL_URL) -path db/migrations down $(N)
+
+test:
+	go test -v ./...
