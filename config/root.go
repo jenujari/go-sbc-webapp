@@ -59,7 +59,11 @@ func init() {
 	}
 
 	if err := applyDBEnv(cfg); err != nil {
-		logger.Fatalf("database configuration error: %v", err)
+		if isTestBinary() {
+			logger.Printf("Warning: database configuration skipped for tests: %v", err)
+		} else {
+			logger.Fatalf("database configuration error: %v", err)
+		}
 	}
 }
 
@@ -69,6 +73,10 @@ func loadDotEnv() {
 	if err := godotenv.Load(); err != nil && !os.IsNotExist(err) {
 		log.Printf("Warning: unable to load .env file: %v", err)
 	}
+}
+
+func isTestBinary() bool {
+	return strings.HasSuffix(os.Args[0], ".test")
 }
 
 func applyDBEnv(cfg *Config) error {

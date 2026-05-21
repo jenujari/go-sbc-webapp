@@ -20,6 +20,7 @@ func init() {
 	}
 
 	services["sweClient"] = sweClient
+	services["planetShadbalaService"] = NewPlanetShadbalaService(sweClient)
 	services["webData"] = GetGlobalWebData(cfg)
 	services["config"] = cfg
 	services["db"] = dbService

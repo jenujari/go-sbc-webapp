@@ -1,0 +1,81 @@
+{{define "content"}}
+<div class="space-y-8" x-data="{
+    dateTime: '{{.currentTime}}',
+    updateFromSlider(val) {
+        const d = new Date(this.dateTime);
+        const year = d.getFullYear();
+        const start = new Date(year, 0, 1, 0, 0, 0).getTime();
+        const end = new Date(year, 11, 31, 23, 59, 59, 999).getTime();
+        const newTime = start + (val / 10000) * (end - start);
+        this.dateTime = this.formatDate(new Date(newTime));
+    },
+    get sliderValue() {
+        const d = new Date(this.dateTime);
+        const year = d.getFullYear();
+        const start = new Date(year, 0, 1, 0, 0, 0).getTime();
+        const end = new Date(year, 11, 31, 23, 59, 59, 999).getTime();
+        return Math.floor(((d.getTime() - start) / (end - start)) * 10000);
+    },
+    formatDate(date) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        const h = String(date.getHours()).padStart(2, '0');
+        const min = String(date.getMinutes()).padStart(2, '0');
+        return `${y}-${m}-${d}T${h}:${min}`;
+    }
+}">
+    <section class="text-center max-w-4xl mx-auto pt-4">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-stone-100 text-stone-800 mb-6 shadow-sm border border-stone-200/60">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+            </svg>
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-serif font-medium tracking-wide mb-4 text-stone-900">Navagraha Strengths</h1>
+        <p class="text-stone-500 max-w-xl mx-auto text-sm sm:text-base leading-relaxed">A precise analysis of planetary powers (Shadbala) and current state properties according to Vedic astrology principles.</p>
+    </section>
+
+    <section class="max-w-4xl mx-auto bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-stone-200/60 p-6 sm:p-8">
+        <form hx-post="/planet-shadbala/results" hx-target="#planet-shadbala-result" hx-indicator="#planet-shadbala-loading" hx-trigger="load, change delay:200ms from:#shadbala-datetime, input delay:50ms from:#shadbala-year-slider" class="space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
+                <div class="space-y-2">
+                    <label for="shadbala-datetime" class="block text-sm font-semibold font-jakarta text-stone-700">Date and Time</label>
+                    <input type="datetime-local" id="shadbala-datetime" name="datetime" x-model="dateTime" class="cursor-pointer w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-stone-500/20 focus:border-stone-500 transition-all outline-none font-medium font-jakarta text-stone-800" required>
+                </div>
+                <div class="hidden md:block">
+                    <div class="flex items-center space-x-4 text-sm text-stone-500 bg-stone-50/50 p-3 rounded-xl border border-stone-100">
+                        <svg class="w-5 h-5 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <p class="font-jakarta">Slide to navigate through the year <span class="font-bold font-jakarta text-stone-700" x-text="new Date(dateTime).getFullYear()"></span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="flex justify-between items-center text-xs font-bold font-jakarta text-stone-400 uppercase tracking-wider">
+                    <span>Jan 1</span>
+                    <span class="text-stone-600 bg-stone-50 px-3 py-1 rounded-full font-semibold font-jakarta border border-stone-100" x-text="new Date(dateTime).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })"></span>
+                    <span>Dec 31</span>
+                </div>
+                <div class="relative h-6 flex items-center group">
+                    <input type="range" id="shadbala-year-slider" min="0" max="10000" :value="sliderValue" @input="updateFromSlider($event.target.value)" class="w-full h-2 bg-stone-100 rounded-lg appearance-none cursor-pointer accent-stone-600 hover:accent-stone-700 transition-all">
+                </div>
+            </div>
+            <button type="submit" class="hidden">Submit</button>
+        </form>
+    </section>
+
+    <div id="planet-shadbala-loading" class="htmx-indicator max-w-4xl mx-auto">
+        <div class="flex flex-col items-center justify-center p-12 bg-white rounded-2xl border border-dashed border-stone-200">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-stone-600 mb-4"></div>
+            <p class="text-stone-400 text-sm font-medium font-jakarta">Loading planetary strengths...</p>
+        </div>
+    </div>
+
+    <section id="planet-shadbala-result" class="max-w-4xl mx-auto min-h-[240px] transition-all duration-300">
+        <div class="flex flex-col items-center justify-center p-12 bg-white rounded-2xl border border-dashed border-stone-200">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-stone-600 mb-4"></div>
+            <p class="text-stone-400 text-sm font-medium font-jakarta">Loading planetary strengths...</p>
+        </div>
+    </section>
+</div>
+{{end}}

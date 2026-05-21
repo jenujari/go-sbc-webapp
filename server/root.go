@@ -38,6 +38,8 @@ func init() {
 	router.HandleFunc("/tithies", tithyTableHandler)
 	router.HandleFunc("/planet-conjunction", conjunctionHandler)
 	router.HandleFunc("/planet-conjunctions", conjunctionSearchHandler)
+	router.HandleFunc("/planet-shadbala", planetShadbalaHandler)
+	router.HandleFunc("/planet-shadbala/results", planetShadbalaResultsHandler)
 	router.HandleFunc("/ohlc-upload", ohlcUploadPageHandler)
 	router.HandleFunc("/ohlc-upload/import", ohlcUploadHandler)
 	router.HandleFunc("/", indexhandler)
