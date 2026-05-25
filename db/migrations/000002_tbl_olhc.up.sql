@@ -16,6 +16,7 @@ CREATE TABLE tbl_ohlc (
 ALTER TABLE tbl_ohlc
 ADD PRIMARY KEY (day, ticker_id);
 
+
 CREATE TYPE planet_type AS ENUM ('Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto', 'Rahu', 'Ketu');
 CREATE TYPE vedha_type AS ENUM ('left', 'right', 'front', 'no', 'n/a');
 CREATE TYPE rel_type AS ENUM ('Friend', 'Neutral', 'Enemy', 'Self');
@@ -44,15 +45,15 @@ CREATE TABLE IF NOT EXISTS tbl_planet_positions (
     speed_category   speed_type NOT NULL,
 
     -- Vedic / Astrological Context
-    vedha            vedha_type NOT NULL,
-    sign             sign_type,
-    nakshatra_name   nakshatra_type,
-    nakshatra_pada   SMALLINT,
-    is_retro         BOOLEAN DEFAULT FALSE,
+    vedha            vedha_type DEFAULT 'n/a' NOT NULL,
+    sign             sign_type NOT NULL,
+    nakshatra_name   nakshatra_type NOT NULL,
+    nakshatra_pada   SMALLINT NOT NULL,
+    is_retro         BOOLEAN DEFAULT FALSE NOT NULL,
     sign_lord        planet_type,
     sign_lordship    rel_type,
-    navamsa_sign     sign_type,
-    vargottama       BOOLEAN DEFAULT FALSE,
+    navamsa_sign     sign_type NOT NULL,
+    vargottama       BOOLEAN DEFAULT FALSE NOT NULL,
 
     -- Calculated Bala (Strengths)
     uday_bala        DOUBLE PRECISION,

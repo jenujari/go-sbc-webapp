@@ -16,6 +16,8 @@ type Querier interface {
 	ListTickers(ctx context.Context) ([]TblTicker, error)
 	UpdateOLHC(ctx context.Context, arg UpdateOLHCParams) error
 	UpsertOLHC(ctx context.Context, arg UpsertOLHCParams) (int64, error)
+	UpsertPanchang(ctx context.Context, arg UpsertPanchangParams) error
+	UpsertPlanetPosition(ctx context.Context, arg UpsertPlanetPositionParams) error
 }
 
 var _ Querier = (*Queries)(nil)

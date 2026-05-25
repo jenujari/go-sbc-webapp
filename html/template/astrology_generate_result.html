@@ -1,0 +1,64 @@
+{{ define "astrology_generate_result.html" }}
+
+{{ if .Errors }}
+<div class="mb-6 rounded-2xl border border-red-200 bg-red-50/70 backdrop-blur-sm p-5 text-sm text-red-900 shadow-sm transition-all duration-300">
+  <div class="flex items-center gap-2.5 font-bold text-red-800">
+    <svg class="w-5 h-5 text-red-600 shrink-0 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+    </svg>
+    <span>Generation warnings or errors encountered</span>
+  </div>
+  
+  <div class="mt-3 overflow-hidden rounded-xl border border-red-200/60 bg-white">
+    <div class="max-h-60 overflow-y-auto divide-y divide-red-100 p-2 font-mono text-xs text-red-600">
+      {{ range .Errors }}
+        <div class="py-2 px-3 hover:bg-red-50/50 transition-colors duration-150">{{ . }}</div>
+      {{ end }}
+    </div>
+  </div>
+  {{ if ge (len .Errors) 20 }}
+    <p class="mt-2 text-[10px] text-red-500 font-semibold italic">Showing first 20 errors only.</p>
+  {{ end }}
+</div>
+{{ end }}
+
+<div class="rounded-2xl border border-emerald-200 bg-emerald-50/60 backdrop-blur-sm p-6 text-sm text-stone-850 shadow-md transition-all duration-300 hover:shadow-lg">
+  <div class="flex items-center gap-2.5 font-bold text-emerald-800 mb-4">
+    <svg class="w-6 h-6 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    <span class="text-lg font-jakarta tracking-tight">Astrology Data Generated Successfully!</span>
+  </div>
+  
+  <div class="grid grid-cols-2 gap-4 mt-2">
+    <!-- Stat Box 1: Panchang -->
+    <div class="rounded-xl border border-emerald-100 bg-white/90 p-4 shadow-sm hover:border-emerald-200 hover:-translate-y-0.5 transition-all duration-200">
+      <div class="flex items-center gap-2 text-stone-500 text-xs font-semibold uppercase tracking-wider">
+        <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+        Panchang Records
+      </div>
+      <div class="mt-2 flex items-baseline gap-2">
+        <span class="text-3xl font-extrabold text-stone-900 tracking-tight">{{ .PanchangUpserted }}</span>
+        <span class="text-xs text-emerald-600 font-semibold bg-emerald-100/70 px-2 py-0.5 rounded-full">Upserted</span>
+      </div>
+    </div>
+    
+    <!-- Stat Box 2: Planet Positions -->
+    <div class="rounded-xl border border-emerald-100 bg-white/90 p-4 shadow-sm hover:border-emerald-200 hover:-translate-y-0.5 transition-all duration-200">
+      <div class="flex items-center gap-2 text-stone-500 text-xs font-semibold uppercase tracking-wider">
+        <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+        </svg>
+        Planet Positions
+      </div>
+      <div class="mt-2 flex items-baseline gap-2">
+        <span class="text-3xl font-extrabold text-stone-900 tracking-tight">{{ .PlanetPositionsUpserted }}</span>
+        <span class="text-xs text-emerald-600 font-semibold bg-emerald-100/70 px-2 py-0.5 rounded-full">Upserted</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{ end }}

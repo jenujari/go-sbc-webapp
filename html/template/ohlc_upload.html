@@ -1,125 +1,189 @@
 {{ define "content" }}
 <div
-  class="max-w-3xl mx-auto"
-  x-data="{ uploading: false, progress: 0, fileName: '' }"
+  class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+  x-data="{ uploading: false, progress: 0, fileName: '', generating: false }"
   @htmx:xhr:progress.window="if ($event.detail.total > 0) progress = Math.round(($event.detail.loaded / $event.detail.total) * 100)"
-  @htmx:before-request.window="uploading = true; progress = 0"
-  @htmx:after-request.window="uploading = false; progress = 100"
+  @htmx:before-request.window="if ($event.detail.elt.id === 'import-form') { uploading = true; progress = 0; } else if ($event.detail.elt.id === 'generate-form') { generating = true; }"
+  @htmx:after-request.window="if ($event.detail.elt.id === 'import-form') { uploading = false; progress = 100; } else if ($event.detail.elt.id === 'generate-form') { generating = false; }"
 >
-  <div class="mb-6">
-    <h1 class="text-2xl font-bold text-stone-900 font-jakarta">
-      Upload OHLC CSV
+  <div class="mb-8">
+    <h1 class="text-3xl font-extrabold text-stone-900 tracking-tight font-jakarta">
+      Astrology & Market Data Center
     </h1>
-    <p class="mt-2 text-sm text-stone-600">
-      Import market OHLC rows into <code>tbl_ohlc</code>. Expected CSV columns:
-      Date, Open, High, Low, Close, Volume.
+    <p class="mt-2 text-base text-stone-600">
+      Import market OHLC records and generate Panchang or Planet Position values for financial astrology modeling.
     </p>
   </div>
 
   {{ if .Error }}
   <div
-    class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+    class="mb-8 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 shadow-sm"
   >
     {{ .Error }}
   </div>
   {{ end }}
 
-  <div class="rounded-2xl bg-white shadow-sm ring-1 ring-stone-200 p-6">
-    <form
-      hx-post="/ohlc-upload/import"
-      hx-encoding="multipart/form-data"
-      hx-target="#upload-result"
-      hx-swap="innerHTML"
-      class="space-y-6"
-    >
-      <div>
-        <label for="ticker_id" class="block text-sm font-medium text-stone-700"
-          >Ticker</label
-        >
-        <select
-          id="ticker_id"
-          name="ticker_id"
-          required
-          class="drp mt-2 block w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-500/20"
-        >
-          <option value="">Select ticker</option>
-          {{ range .Tickers }}
-          <option value="{{ .ID }}">
-            {{ .Name }} ({{ .Exchange }}){{ with .FullName }} - {{ . }}{{ end }}
-          </option>
-          {{ end }}
-        </select>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+    <!-- Left Column: Upload OHLC CSV -->
+    <div class="rounded-2xl bg-white shadow-md ring-1 ring-stone-200/80 p-6 hover:shadow-lg transition-all duration-300">
+      <div class="mb-4">
+        <h2 class="text-xl font-bold text-stone-900 font-jakarta flex items-center gap-2">
+          <svg class="w-5 h-5 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+          Upload Market OHLC
+        </h2>
+        <p class="text-xs text-stone-500 mt-1">Import ticker history into <code>tbl_ohlc</code>. Columns: Date, Open, High, Low, Close, Volume.</p>
       </div>
 
-      <div>
-        <label for="ohlc_file" class="block text-sm font-medium text-stone-700"
-          >CSV file</label
-        >
-        <input
-          id="ohlc_file"
-          name="ohlc_file"
-          type="file"
-          accept=".csv,text/csv"
-          required
-          @change="fileName = $event.target.files[0]?.name || ''"
-          class="mt-2 block w-full text-sm text-stone-600 file:mr-4 file:rounded-lg file:border-0 file:bg-stone-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-stone-700 hover:file:bg-stone-100"
-        />
-        <p class="mt-2 text-xs text-stone-500" x-show="fileName">
-          Selected: <span x-text="fileName"></span>
-        </p>
-      </div>
-
-      <div x-show="uploading" x-cloak class="rounded-lg bg-stone-50 p-4">
-        <div class="flex items-center justify-between text-sm text-stone-600">
-          <span
-            x-text="progress < 100 ? 'Uploading file...' : 'File received. Processing records on server...'"
-          ></span>
-          <span x-text="progress + '%'"></span>
-        </div>
-        <div class="mt-2 h-2 overflow-hidden rounded-full bg-stone-200">
-          <div
-            class="h-full rounded-full bg-stone-600 transition-all"
-            :style="`width: ${progress}%`"
-          ></div>
-        </div>
-        <p class="mt-2 text-xs text-stone-500">
-          After upload reaches 100%, the server validates and upserts rows. The
-          final result appears below.
-        </p>
-      </div>
-
-      <div class="flex items-center gap-3">
-        <button
-          type="submit"
-          :disabled="uploading"
-          class="inline-flex items-center rounded-lg bg-stone-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-stone-700 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          <svg
-            x-show="uploading"
-            class="mr-2 h-4 w-4 animate-spin"
-            viewBox="0 0 24 24"
-            fill="none"
+      <form
+        id="import-form"
+        hx-post="/ohlc-upload/import"
+        hx-encoding="multipart/form-data"
+        hx-target="#upload-result"
+        hx-swap="innerHTML"
+        class="space-y-6"
+      >
+        <div>
+          <label for="ticker_id" class="block text-sm font-semibold text-stone-700"
+            >Ticker</label
           >
-            <circle
-              class="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              stroke-width="4"
-            ></circle>
-            <path
-              class="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-            ></path>
-          </svg>
-          <span x-text="uploading ? 'Uploading...' : 'Upload CSV'"></span>
-        </button>
-      </div>
-    </form>
-  </div>
+          <select
+            id="ticker_id"
+            name="ticker_id"
+            required
+            class="drp mt-2 block w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-500/20"
+          >
+            <option value="">Select ticker</option>
+            {{ range .Tickers }}
+            <option value="{{ .ID }}">
+              {{ .Name }} ({{ .Exchange }}){{ with .FullName }} - {{ . }}{{ end }}
+            </option>
+            {{ end }}
+          </select>
+        </div>
 
-  <div id="upload-result" class="mt-6"></div>
+        <div>
+          <label for="ohlc_file" class="block text-sm font-semibold text-stone-700"
+            >CSV file</label
+          >
+          <input
+            id="ohlc_file"
+            name="ohlc_file"
+            type="file"
+            accept=".csv,text/csv"
+            required
+            @change="fileName = $event.target.files[0]?.name || ''"
+            class="mt-2 block w-full text-sm text-stone-600 file:mr-4 file:rounded-lg file:border-0 file:bg-stone-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-stone-700 hover:file:bg-stone-100"
+          />
+          <p class="mt-2 text-xs text-stone-500" x-show="fileName" x-cloak>
+            Selected: <span x-text="fileName" class="font-medium text-stone-700"></span>
+          </p>
+        </div>
+
+        <div x-show="uploading" x-cloak class="rounded-lg bg-stone-50 p-4">
+          <div class="flex items-center justify-between text-sm text-stone-600">
+            <span
+              x-text="progress < 100 ? 'Uploading file...' : 'File received. Processing records on server...'"
+            ></span>
+            <span x-text="progress + '%'" class="font-bold"></span>
+          </div>
+          <div class="mt-2 h-2 overflow-hidden rounded-full bg-stone-200">
+            <div
+              class="h-full rounded-full bg-stone-600 transition-all duration-150"
+              :style="`width: ${progress}%`"
+            ></div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button
+            type="submit"
+            :disabled="uploading"
+            class="inline-flex items-center rounded-lg bg-stone-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-500/50 disabled:cursor-not-allowed disabled:opacity-60 transition-all duration-150"
+          >
+            <span x-text="uploading ? 'Uploading...' : 'Upload CSV'"></span>
+          </button>
+        </div>
+      </form>
+
+      <div id="upload-result" class="mt-6"></div>
+    </div>
+
+    <!-- Right Column: Generate Astrology Data -->
+    <div class="rounded-2xl bg-white shadow-md ring-1 ring-stone-200/80 p-6 hover:shadow-lg transition-all duration-300">
+      <div class="mb-4">
+        <h2 class="text-xl font-bold text-stone-900 font-jakarta flex items-center gap-2">
+          <svg class="w-5 h-5 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+          Astrology Data Generator
+        </h2>
+        <p class="text-xs text-stone-500 mt-1">Generate and upsert <code>tbl_panchang</code> and <code>tbl_planet_positions</code> in UTC.</p>
+      </div>
+
+      <form
+        id="generate-form"
+        hx-post="/ohlc-upload/generate-astrology"
+        hx-target="#astrology-result"
+        hx-swap="innerHTML"
+        class="space-y-6"
+      >
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="from_date" class="block text-sm font-semibold text-stone-700">From Date</label>
+            <input
+              id="from_date"
+              name="from_date"
+              type="date"
+              required
+              class="mt-2 block w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-500/20"
+            />
+          </div>
+          <div>
+            <label for="to_date" class="block text-sm font-semibold text-stone-700">To Date</label>
+            <input
+              id="to_date"
+              name="to_date"
+              type="date"
+              required
+              class="mt-2 block w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-500/20"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="time" class="block text-sm font-semibold text-stone-700">Specific Time (UTC)</label>
+          <input
+            id="time"
+            name="time"
+            type="time"
+            value="09:30"
+            required
+            class="mt-2 block w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-500/20"
+          />
+          <p class="mt-1.5 text-xs text-stone-500">The time of day at which values will be calculated for each date (e.g. 09:30 for market open).</p>
+        </div>
+
+        <div x-show="generating" x-cloak class="rounded-lg bg-stone-50 p-4 animate-pulse">
+          <div class="flex items-center gap-3 text-sm text-stone-600">
+            <svg class="animate-spin h-5 w-5 text-stone-500" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            </svg>
+            <span>Querying gRPC API & performing database upserts...</span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button
+            type="submit"
+            :disabled="generating"
+            class="inline-flex items-center rounded-lg bg-stone-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-500/50 disabled:cursor-not-allowed disabled:opacity-60 transition-all duration-150"
+          >
+            <span x-text="generating ? 'Generating...' : 'Generate Data'"></span>
+          </button>
+        </div>
+      </form>
+
+      <div id="astrology-result" class="mt-6"></div>
+    </div>
+  </div>
 </div>
 {{ end }}

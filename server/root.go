@@ -42,6 +42,7 @@ func init() {
 	router.HandleFunc("/planet-shadbala/results", planetShadbalaResultsHandler)
 	router.HandleFunc("/ohlc-upload", ohlcUploadPageHandler)
 	router.HandleFunc("/ohlc-upload/import", ohlcUploadHandler)
+	router.HandleFunc("/ohlc-upload/generate-astrology", astrologyGenerateHandler)
 	router.HandleFunc("/", indexhandler)
 
 	server.Handler = GlobalRequestContextSetter(router)

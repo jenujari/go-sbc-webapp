@@ -230,3 +230,136 @@ func (q *Queries) UpsertOLHC(ctx context.Context, arg UpsertOLHCParams) (int64, 
 	}
 	return result.RowsAffected(), nil
 }
+
+const upsertPanchang = `-- name: UpsertPanchang :exec
+INSERT INTO tbl_panchang (
+  "time", tithy, nakshatra, weekday
+) VALUES (
+  $1, $2, $3, $4
+)
+ON CONFLICT ("time") DO UPDATE SET
+  tithy = EXCLUDED.tithy,
+  nakshatra = EXCLUDED.nakshatra,
+  weekday = EXCLUDED.weekday
+`
+
+type UpsertPanchangParams struct {
+	Time      pgtype.Timestamptz `db:"time" json:"time"`
+	Tithy     int16              `db:"tithy" json:"tithy"`
+	Nakshatra NakshatraType      `db:"nakshatra" json:"nakshatra"`
+	Weekday   WeekDayType        `db:"weekday" json:"weekday"`
+}
+
+func (q *Queries) UpsertPanchang(ctx context.Context, arg UpsertPanchangParams) error {
+	_, err := q.db.Exec(ctx, upsertPanchang,
+		arg.Time,
+		arg.Tithy,
+		arg.Nakshatra,
+		arg.Weekday,
+	)
+	return err
+}
+
+const upsertPlanetPosition = `-- name: UpsertPlanetPosition :exec
+INSERT INTO tbl_planet_positions (
+  observation_time, planet_name, longitude, latitude, distance,
+  speed_long, speed_lat, speed_dist, speed_category, vedha,
+  sign, nakshatra_name, nakshatra_pada, is_retro, sign_lord,
+  sign_lordship, navamsa_sign, vargottama, uday_bala, uchcha_bala,
+  vakra_bala, kshetra_bala, navamsha_bala, longitude_dms, latitude_dms,
+  speed_long_dms
+) VALUES (
+  $1, $2, $3, $4, $5,
+  $6, $7, $8, $9, $10,
+  $11, $12, $13, $14, $15,
+  $16, $17, $18, $19, $20,
+  $21, $22, $23, $24, $25,
+  $26
+)
+ON CONFLICT (observation_time, planet_name) DO UPDATE SET
+  longitude = EXCLUDED.longitude,
+  latitude = EXCLUDED.latitude,
+  distance = EXCLUDED.distance,
+  speed_long = EXCLUDED.speed_long,
+  speed_lat = EXCLUDED.speed_lat,
+  speed_dist = EXCLUDED.speed_dist,
+  speed_category = EXCLUDED.speed_category,
+  vedha = EXCLUDED.vedha,
+  sign = EXCLUDED.sign,
+  nakshatra_name = EXCLUDED.nakshatra_name,
+  nakshatra_pada = EXCLUDED.nakshatra_pada,
+  is_retro = EXCLUDED.is_retro,
+  sign_lord = EXCLUDED.sign_lord,
+  sign_lordship = EXCLUDED.sign_lordship,
+  navamsa_sign = EXCLUDED.navamsa_sign,
+  vargottama = EXCLUDED.vargottama,
+  uday_bala = EXCLUDED.uday_bala,
+  uchcha_bala = EXCLUDED.uchcha_bala,
+  vakra_bala = EXCLUDED.vakra_bala,
+  kshetra_bala = EXCLUDED.kshetra_bala,
+  navamsha_bala = EXCLUDED.navamsha_bala,
+  longitude_dms = EXCLUDED.longitude_dms,
+  latitude_dms = EXCLUDED.latitude_dms,
+  speed_long_dms = EXCLUDED.speed_long_dms
+`
+
+type UpsertPlanetPositionParams struct {
+	ObservationTime pgtype.Timestamptz `db:"observation_time" json:"observation_time"`
+	PlanetName      PlanetType         `db:"planet_name" json:"planet_name"`
+	Longitude       float64            `db:"longitude" json:"longitude"`
+	Latitude        float64            `db:"latitude" json:"latitude"`
+	Distance        float64            `db:"distance" json:"distance"`
+	SpeedLong       float64            `db:"speed_long" json:"speed_long"`
+	SpeedLat        float64            `db:"speed_lat" json:"speed_lat"`
+	SpeedDist       float64            `db:"speed_dist" json:"speed_dist"`
+	SpeedCategory   SpeedType          `db:"speed_category" json:"speed_category"`
+	Vedha           VedhaType          `db:"vedha" json:"vedha"`
+	Sign            *SignType          `db:"sign" json:"sign"`
+	NakshatraName   *NakshatraType     `db:"nakshatra_name" json:"nakshatra_name"`
+	NakshatraPada   *int16             `db:"nakshatra_pada" json:"nakshatra_pada"`
+	IsRetro         *bool              `db:"is_retro" json:"is_retro"`
+	SignLord        *PlanetType        `db:"sign_lord" json:"sign_lord"`
+	SignLordship    *RelType           `db:"sign_lordship" json:"sign_lordship"`
+	NavamsaSign     *SignType          `db:"navamsa_sign" json:"navamsa_sign"`
+	Vargottama      *bool              `db:"vargottama" json:"vargottama"`
+	UdayBala        *float64           `db:"uday_bala" json:"uday_bala"`
+	UchchaBala      *float64           `db:"uchcha_bala" json:"uchcha_bala"`
+	VakraBala       *float64           `db:"vakra_bala" json:"vakra_bala"`
+	KshetraBala     *float64           `db:"kshetra_bala" json:"kshetra_bala"`
+	NavamshaBala    *float64           `db:"navamsha_bala" json:"navamsha_bala"`
+	LongitudeDms    []byte             `db:"longitude_dms" json:"longitude_dms"`
+	LatitudeDms     []byte             `db:"latitude_dms" json:"latitude_dms"`
+	SpeedLongDms    []byte             `db:"speed_long_dms" json:"speed_long_dms"`
+}
+
+func (q *Queries) UpsertPlanetPosition(ctx context.Context, arg UpsertPlanetPositionParams) error {
+	_, err := q.db.Exec(ctx, upsertPlanetPosition,
+		arg.ObservationTime,
+		arg.PlanetName,
+		arg.Longitude,
+		arg.Latitude,
+		arg.Distance,
+		arg.SpeedLong,
+		arg.SpeedLat,
+		arg.SpeedDist,
+		arg.SpeedCategory,
+		arg.Vedha,
+		arg.Sign,
+		arg.NakshatraName,
+		arg.NakshatraPada,
+		arg.IsRetro,
+		arg.SignLord,
+		arg.SignLordship,
+		arg.NavamsaSign,
+		arg.Vargottama,
+		arg.UdayBala,
+		arg.UchchaBala,
+		arg.VakraBala,
+		arg.KshetraBala,
+		arg.NavamshaBala,
+		arg.LongitudeDms,
+		arg.LatitudeDms,
+		arg.SpeedLongDms,
+	)
+	return err
+}
