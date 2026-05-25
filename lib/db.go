@@ -13,7 +13,7 @@ import (
 
 type DBService struct {
 	Pool    *pgxpool.Pool
-	Queries *sqls.Queries
+	Queries sqls.Querier
 }
 
 func NewDBService(ctx context.Context, cfg *config.Config) (*DBService, error) {
