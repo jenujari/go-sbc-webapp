@@ -125,9 +125,9 @@ pipeline {
             steps {
                 sh """
                     kubectl set image deployment/webapp \
-                    webapp=$IMAGE_NAME:latest
+                    webapp=$IMAGE_NAME:$SHORT_SHA
 
-                    kubectl rollout status deployment/webapp
+                    kubectl rollout restart deployment/webapp
                 """
             }
         }
