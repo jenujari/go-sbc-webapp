@@ -39,6 +39,7 @@ type PlanetShadbalaRecord struct {
 	Retrograde     bool
 	SpeedCategory  string
 	Vedha          string
+	VedhaTarget    string
 	LongitudeDMS   string
 	LatitudeDMS    string
 	SignLord       string
@@ -89,6 +90,7 @@ func MapBalasResponse(timestamp string, resp *proto.BalasResponse) PlanetShadbal
 		speed := "-"
 		speedCategory := "-"
 		vedha := "-"
+		vedhaTarget := "-"
 		longitudeDMS := "-"
 		latitudeDMS := "-"
 		signLord := "-"
@@ -111,6 +113,9 @@ func MapBalasResponse(timestamp string, resp *proto.BalasResponse) PlanetShadbal
 			}
 			if cords.GetVedha() != "" {
 				vedha = cords.GetVedha()
+			}
+			if cords.GetVedhaTarget() != "" {
+				vedhaTarget = cords.GetVedhaTarget()
 			}
 			longitudeDMS = formatProtoDMS(cords.GetLongitudeDms())
 			latitudeDMS = formatProtoDMS(cords.GetLatitudeDms())
@@ -143,6 +148,7 @@ func MapBalasResponse(timestamp string, resp *proto.BalasResponse) PlanetShadbal
 			Retrograde:    retrograde,
 			SpeedCategory: speedCategory,
 			Vedha:         vedha,
+			VedhaTarget:   vedhaTarget,
 			LongitudeDMS:  longitudeDMS,
 			LatitudeDMS:   latitudeDMS,
 			SignLord:      signLord,
