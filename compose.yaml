@@ -6,12 +6,13 @@ services:
       - sbc_app_pgdata:/pgdata
     environment:
       - PGDATA=/pgdata
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?set in .env}
-      - POSTGRES_USER=${POSTGRES_USER:?set in .env}
-      - POSTGRES_DB=${POSTGRES_DB:?set in .env}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-change_me}
+      - POSTGRES_USER=${POSTGRES_USER:-user_main}
+      - POSTGRES_DB=${POSTGRES_DB:-db_sbc}
     profiles:
       - infra
       - dev
+      - prod
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 10s
@@ -74,6 +75,12 @@ services:
     environment:
       - ENV=container
       - CONFIG_PATH=/app/config
+      - POSTGRES_HOST=timescaledb
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER:-user_main}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-change_me}
+      - POSTGRES_DB=${POSTGRES_DB:-db_sbc}
+      - POSTGRES_SSLMODE=${POSTGRES_SSLMODE:-disable}
   webapp-dev:
     build:
       context: .
@@ -97,6 +104,12 @@ services:
     environment:
       - ENV=container
       - CONFIG_PATH=/app/config
+      - POSTGRES_HOST=timescaledb
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER:-user_main}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-change_me}
+      - POSTGRES_DB=${POSTGRES_DB:-db_sbc}
+      - POSTGRES_SSLMODE=${POSTGRES_SSLMODE:-disable}
 
 networks:
   app_network:
