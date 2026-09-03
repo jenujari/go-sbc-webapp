@@ -21,8 +21,8 @@ pipeline {
         stage('Unit Tests') {
             steps {
                 sh '''
-                    echo "Test using go 1.26 alpine image..."
-                    podman run --rm -v .:/workspace -w /workspace docker.io/golang:1.26-alpine go test ./...
+                    echo "Test using go 1.27.0 alpine image..."
+                    podman run --rm -v .:/workspace -w /workspace docker.io/golang:1.27.0-alpine go test ./...
                 '''
             }
         }

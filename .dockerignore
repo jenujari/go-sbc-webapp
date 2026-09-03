@@ -1,0 +1,10 @@
+.git
+.gitignore
+.env
+.env.example
+*.md
+Jenkinsfile
+k8s-deployment.yaml
+compose.yaml
+dev.Dockerfile
+html/static/**/*.map

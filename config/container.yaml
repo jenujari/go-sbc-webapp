@@ -1,5 +1,5 @@
 swe_grpc:
-  addr: "host.containers.internal:5678"
+  addr: "sweapi:5678"
 
 web_app:
   port: "8081"
