@@ -12,7 +12,7 @@ func TestSwePlanetShadbalaServiceGetPlanetShadbalaHappyPath(t *testing.T) {
 	client := NewMockSweGrpcClient(t)
 	client.EXPECT().GetBalas(mock.Anything, "2026-05-21T00:00:00Z").Return(&proto.BalasResponse{Results: map[string]*proto.PlanetBalas{
 		"sun": {
-			Cords:        &proto.PlanetCord{Name: "sun", Sign: "Leo", Nakshatra: &proto.NakshatraPada{Name: "Magha"}, SpeedLong: 0.98},
+			Cords:        &proto.PlanetCord{Name: "sun", Sign: "Leo", Nakshatra: &proto.NakshatraPada{Name: "Magha"}, SpeedLong: 0.98, Vedha: "left", VedhaTarget: "Shravana"},
 			UdayBala:     90,
 			UchchaBala:   80,
 			VakraBala:    0,
@@ -29,7 +29,7 @@ func TestSwePlanetShadbalaServiceGetPlanetShadbalaHappyPath(t *testing.T) {
 		t.Fatalf("expected one planet, got %d", len(view.Planets))
 	}
 	planet := view.Planets[0]
-	if planet.Name != "Sun" || planet.Symbol != "☉" || planet.Sign != "Leo" || planet.Nakshatra != "Magha" {
+	if planet.Name != "Sun" || planet.Symbol != "☉" || planet.Sign != "Leo" || planet.Nakshatra != "Magha" || planet.Vedha != "left" || planet.VedhaTarget != "Shravana" {
 		t.Fatalf("unexpected mapped planet: %+v", planet)
 	}
 	if planet.Total != 60 {
@@ -59,7 +59,7 @@ func TestMapBalasResponseHandlesNilFields(t *testing.T) {
 	if len(view.Planets) != 1 {
 		t.Fatalf("expected one non-nil planet, got %d", len(view.Planets))
 	}
-	if view.Planets[0].Sign != "-" || view.Planets[0].Nakshatra != "-" || view.Planets[0].Speed != "-" {
+	if view.Planets[0].Sign != "-" || view.Planets[0].Nakshatra != "-" || view.Planets[0].Speed != "-" || view.Planets[0].VedhaTarget != "-" {
 		t.Fatalf("expected nil-safe defaults, got %+v", view.Planets[0])
 	}
 }

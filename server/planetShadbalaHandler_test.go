@@ -31,6 +31,8 @@ func TestPlanetShadbalaResultsHandlerHTMXFragment(t *testing.T) {
 			Total:        60,
 			Sign:         "Leo",
 			Nakshatra:    "Magha",
+			Vedha:        "left",
+			VedhaTarget:  "Shravana",
 			Speed:        "0.9800° / day",
 			State:        "Direct",
 			Retrograde:   false,
@@ -45,7 +47,7 @@ func TestPlanetShadbalaResultsHandlerHTMXFragment(t *testing.T) {
 		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
 	}
 	body := rr.Body.String()
-	if !strings.Contains(body, "Detailed Strength Analysis") || !strings.Contains(body, "Sun") || !strings.Contains(body, "Total Power") {
+	if !strings.Contains(body, "Detailed Strength Analysis") || !strings.Contains(body, "Sun") || !strings.Contains(body, "Total Power") || !strings.Contains(body, "Vedha Target") || !strings.Contains(body, "Shravana") {
 		t.Fatalf("expected shadbala fragment, got: %s", body)
 	}
 }
