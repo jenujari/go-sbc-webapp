@@ -17,26 +17,29 @@ func TestPlanetShadbalaResultsHandlerHTMXFragment(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/planet-shadbala/results", strings.NewReader(form.Encode()))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("HX-Request", "true")
-	req = req.WithContext(context.WithValue(req.Context(), "services", map[string]any{
-		"webData": lib.WebData{"appname": "webapp"},
-		"planetShadbalaService": fakePlanetShadbalaService{view: lib.PlanetShadbalaView{Planets: []lib.PlanetShadbalaRecord{{
-			ID:           "sun",
-			Name:         "Sun",
-			Symbol:       "☉",
-			UdayBala:     90,
-			UchchaBala:   80,
-			VakraBala:    0,
-			NavamshaBala: 70,
-			KshetraBala:  60,
-			Total:        60,
-			Sign:         "Leo",
-			Nakshatra:    "Magha",
-			Vedha:        "left",
-			VedhaTarget:  "Shravana",
-			Speed:        "0.9800° / day",
-			State:        "Direct",
-			Retrograde:   false,
-		}}},
+	req = req.WithContext(lib.WithApp(req.Context(), &lib.App{
+		WebData: lib.WebData{"appname": "webapp"},
+		PlanetShadbala: fakePlanetShadbalaService{
+			view: lib.PlanetShadbalaView{
+				Planets: []lib.PlanetShadbalaRecord{{
+					ID:           "sun",
+					Name:         "Sun",
+					Symbol:       "☉",
+					UdayBala:     90,
+					UchchaBala:   80,
+					VakraBala:    0,
+					NavamshaBala: 70,
+					KshetraBala:  60,
+					Total:        60,
+					Sign:         "Leo",
+					Nakshatra:    "Magha",
+					Vedha:        "left",
+					VedhaTarget:  "Shravana",
+					Speed:        "0.9800° / day",
+					State:        "Direct",
+					Retrograde:   false,
+				}},
+			},
 		},
 	}))
 
@@ -53,24 +56,15 @@ func TestPlanetShadbalaResultsHandlerHTMXFragment(t *testing.T) {
 }
 
 func TestPlanetShadbalaResultTemplateNilSafe(t *testing.T) {
-	tpl, err := html.GetTpl().Clone()
-	if err != nil {
-		t.Fatal(err)
-	}
-	tpl, err = tpl.ParseFS(html.GetViewsFs(), "planet_shadbala_result.html")
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	var out strings.Builder
-	err = tpl.ExecuteTemplate(&out, "planet_shadbala_result.html", lib.WebData{
+	err := html.Execute(&out, "planet_shadbala_result.html", lib.WebData{
 		"displayDate": "May 21, 2026 12:30",
 		"shadbala": lib.PlanetShadbalaView{Planets: []lib.PlanetShadbalaRecord{{
 			ID:    "moon",
 			Name:  "Moon",
 			State: "Direct",
 		}}},
-	})
+	}, "planet_shadbala_result.html")
 	if err != nil {
 		t.Fatalf("expected nil-safe template execution, got %v", err)
 	}
