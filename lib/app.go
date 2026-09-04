@@ -15,6 +15,7 @@ type App struct {
 	WebData        WebData
 	DB             *DBService
 	OHLC           *OHLCImporter
+	Astrology      *AstrologyGenerator
 }
 
 type ctxKey int
@@ -48,6 +49,7 @@ func NewApp(ctx context.Context, cfg *config.Config) (*App, error) {
 		WebData:        GetGlobalWebData(cfg),
 		DB:             dbService,
 		OHLC:           NewOHLCImporter(dbService),
+		Astrology:      NewAstrologyGenerator(sweClient, dbService),
 	}, firstErr(sweErr, dbErr)
 }
 

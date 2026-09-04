@@ -96,10 +96,3 @@ func renderOHLCUploadResult(w http.ResponseWriter, data ohlcUploadResultData, st
 	w.WriteHeader(http.StatusOK)
 	html.RenderPartial(w, "ohlc_upload_result.html", data)
 }
-
-func appendLimited(items []string, value string) []string {
-	if len(items) >= 20 {
-		return items
-	}
-	return append(items, value)
-}

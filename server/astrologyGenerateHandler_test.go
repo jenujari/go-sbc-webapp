@@ -108,6 +108,7 @@ func newTestContext(db *lib.DBService, swe lib.SweGrpcClient) context.Context {
 		WebData:   lib.WebData{"appname": "webapp"},
 		DB:        db,
 		SweClient: swe,
+		Astrology: lib.NewAstrologyGenerator(swe, db),
 	})
 }
 
