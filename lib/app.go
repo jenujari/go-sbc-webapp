@@ -14,6 +14,7 @@ type App struct {
 	PlanetShadbala PlanetShadbalaService
 	WebData        WebData
 	DB             *DBService
+	OHLC           *OHLCImporter
 }
 
 type ctxKey int
@@ -46,6 +47,7 @@ func NewApp(ctx context.Context, cfg *config.Config) (*App, error) {
 		PlanetShadbala: NewPlanetShadbalaService(sweClient),
 		WebData:        GetGlobalWebData(cfg),
 		DB:             dbService,
+		OHLC:           NewOHLCImporter(dbService),
 	}, firstErr(sweErr, dbErr)
 }
 
