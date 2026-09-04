@@ -6,7 +6,6 @@ import (
 	"strings"
 	"time"
 
-	"jenujari/go-sbc-webapp/config"
 	"jenujari/go-sbc-webapp/html"
 	"jenujari/go-sbc-webapp/sqls"
 
@@ -223,22 +222,7 @@ func astrologyGenerateHandler(w http.ResponseWriter, r *http.Request) {
 
 func renderAstrologyGenerateResult(w http.ResponseWriter, data astrologyGenerateResultData) {
 	w.WriteHeader(http.StatusOK)
-	tpl, err := html.GetTpl().Clone()
-	if err != nil {
-		config.GetLogger().Println("template clone failed:", err)
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
-	tpl, err = tpl.ParseFS(html.GetViewsFs(), "astrology_generate_result.html")
-	if err != nil {
-		config.GetLogger().Println("template not found:", err)
-		http.Error(w, "template not found", http.StatusInternalServerError)
-		return
-	}
-	if err := tpl.ExecuteTemplate(w, "astrology_generate_result.html", data); err != nil {
-		config.GetLogger().Println("template execution failed:", err)
-		http.Error(w, "template execution failed", http.StatusInternalServerError)
-	}
+	html.RenderPartial(w, "astrology_generate_result.html", data)
 }
 
 func marshalDMS(dms *proto.DMS) []byte {

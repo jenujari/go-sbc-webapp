@@ -28,25 +28,7 @@ func conjunctionHandler(w http.ResponseWriter, r *http.Request) {
 	webData["defaultStart"] = now.Format("2006-01-02T15:04")
 	webData["defaultEnd"] = now.Add(24 * time.Hour).Format("2006-01-02T15:04")
 
-	tpl, err := html.GetTpl().Clone()
-	if err != nil {
-		config.GetLogger().Println("template clone failed", err)
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
-
-	tpl, err = tpl.ParseFS(html.GetViewsFs(), "layout.html", "conjunction.html")
-	if err != nil {
-		config.GetLogger().Println("template not found", err)
-		http.Error(w, "template not found", http.StatusInternalServerError)
-		return
-	}
-
-	err = tpl.ExecuteTemplate(w, "layout.html", webData)
-	if err != nil {
-		config.GetLogger().Println("template execution failed", err)
-		http.Error(w, "template execution failed", http.StatusInternalServerError)
-	}
+	html.RenderPage(w, webData, "conjunction.html")
 }
 
 func conjunctionSearchHandler(w http.ResponseWriter, r *http.Request) {
@@ -163,25 +145,7 @@ type ConjunctionResultRecord struct {
 }
 
 func renderConjunctionResult(w http.ResponseWriter, webData lib.WebData) {
-	tpl, err := html.GetTpl().Clone()
-	if err != nil {
-		config.GetLogger().Println("template clone failed", err)
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
-
-	tpl, err = tpl.ParseFS(html.GetViewsFs(), "conjunction_result.html")
-	if err != nil {
-		config.GetLogger().Println("template not found", err)
-		http.Error(w, "template not found", http.StatusInternalServerError)
-		return
-	}
-
-	err = tpl.ExecuteTemplate(w, "conjunction_result.html", webData)
-	if err != nil {
-		config.GetLogger().Println("template execution failed", err)
-		http.Error(w, "template execution failed", http.StatusInternalServerError)
-	}
+	html.RenderPartial(w, "conjunction_result.html", webData)
 }
 
 func getConjunctionResultRecord(resp interface {

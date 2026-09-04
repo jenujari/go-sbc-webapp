@@ -21,26 +21,7 @@ func planetPosHandler(w http.ResponseWriter, r *http.Request) {
 	webData := app.WebData
 	webData["currentTime"] = time.Now().Format("2006-01-02T15:04")
 
-	tpl, err := html.GetTpl().Clone()
-	if err != nil {
-		config.GetLogger().Println("template clone failed", err)
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
-
-	tpl, err = tpl.ParseFS(html.GetViewsFs(), "layout.html", "planet_pos.html")
-
-	if err != nil {
-		config.GetLogger().Println("template not found", err)
-		http.Error(w, "template not found", http.StatusInternalServerError)
-		return
-	}
-
-	err = tpl.ExecuteTemplate(w, "layout.html", webData)
-	if err != nil {
-		config.GetLogger().Println("template execution failed", err)
-		http.Error(w, "template execution failed", http.StatusInternalServerError)
-	}
+	html.RenderPage(w, webData, "planet_pos.html")
 }
 
 func positionsHandler(w http.ResponseWriter, r *http.Request) {
@@ -75,26 +56,7 @@ func positionsHandler(w http.ResponseWriter, r *http.Request) {
 
 	webData["planets"] = getSortedArray(posResp.GetResults())
 
-	tpl, err := html.GetTpl().Clone()
-	if err != nil {
-		config.GetLogger().Println("template clone failed", err)
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
-
-	tpl, err = tpl.ParseFS(html.GetViewsFs(), "position_table.html")
-
-	if err != nil {
-		config.GetLogger().Println("template not found", err)
-		http.Error(w, "template not found", http.StatusInternalServerError)
-		return
-	}
-
-	err = tpl.ExecuteTemplate(w, "position_table.html", webData)
-	if err != nil {
-		config.GetLogger().Println("template execution failed", err)
-		http.Error(w, "template execution failed", http.StatusInternalServerError)
-	}
+	html.RenderPartial(w, "position_table.html", webData)
 }
 
 type PlanetTableRecord struct {

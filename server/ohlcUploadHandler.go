@@ -59,22 +59,7 @@ func ohlcUploadPageHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	tpl, err := html.GetTpl().Clone()
-	if err != nil {
-		config.GetLogger().Println("template clone failed", err)
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
-	tpl, err = tpl.ParseFS(html.GetViewsFs(), "layout.html", "ohlc_upload.html")
-	if err != nil {
-		config.GetLogger().Println("template not found", err)
-		http.Error(w, "template not found", http.StatusInternalServerError)
-		return
-	}
-	if err := tpl.ExecuteTemplate(w, "layout.html", data); err != nil {
-		config.GetLogger().Println("template execution failed", err)
-		http.Error(w, "template execution failed", http.StatusInternalServerError)
-	}
+	html.RenderPage(w, data, "ohlc_upload.html")
 }
 
 func cloneWebData(webData lib.WebData) lib.WebData {
@@ -285,17 +270,5 @@ func appendLimited(items []string, value string) []string {
 func renderOHLCUploadResult(w http.ResponseWriter, data ohlcUploadResultData, status int) {
 	_ = status
 	w.WriteHeader(http.StatusOK)
-	tpl, err := html.GetTpl().Clone()
-	if err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
-	tpl, err = tpl.ParseFS(html.GetViewsFs(), "ohlc_upload_result.html")
-	if err != nil {
-		http.Error(w, "template not found", http.StatusInternalServerError)
-		return
-	}
-	if err := tpl.ExecuteTemplate(w, "ohlc_upload_result.html", data); err != nil {
-		http.Error(w, "template execution failed", http.StatusInternalServerError)
-	}
+	html.RenderPartial(w, "ohlc_upload_result.html", data)
 }

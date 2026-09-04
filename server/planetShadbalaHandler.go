@@ -16,24 +16,7 @@ func planetShadbalaHandler(w http.ResponseWriter, r *http.Request) {
 	webData := cloneWebData(app.WebData)
 	webData["currentTime"] = time.Now().Format("2006-01-02T15:04")
 
-	tpl, err := html.GetTpl().Clone()
-	if err != nil {
-		config.GetLogger().Println("template clone failed", err)
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
-
-	tpl, err = tpl.ParseFS(html.GetViewsFs(), "layout.html", "planet_shadbala.html")
-	if err != nil {
-		config.GetLogger().Println("template not found", err)
-		http.Error(w, "template not found", http.StatusInternalServerError)
-		return
-	}
-
-	if err := tpl.ExecuteTemplate(w, "layout.html", webData); err != nil {
-		config.GetLogger().Println("template execution failed", err)
-		http.Error(w, "template execution failed", http.StatusInternalServerError)
-	}
+	html.RenderPage(w, webData, "planet_shadbala.html")
 }
 
 func planetShadbalaResultsHandler(w http.ResponseWriter, r *http.Request) {
@@ -72,22 +55,5 @@ func planetShadbalaResultsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	webData["displayDate"] = parsedDate.Format("January 02, 2006 15:04")
 
-	tpl, err := html.GetTpl().Clone()
-	if err != nil {
-		config.GetLogger().Println("template clone failed", err)
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
-
-	tpl, err = tpl.ParseFS(html.GetViewsFs(), "planet_shadbala_result.html")
-	if err != nil {
-		config.GetLogger().Println("template not found", err)
-		http.Error(w, "template not found", http.StatusInternalServerError)
-		return
-	}
-
-	if err := tpl.ExecuteTemplate(w, "planet_shadbala_result.html", webData); err != nil {
-		config.GetLogger().Println("template execution failed", err)
-		http.Error(w, "template execution failed", http.StatusInternalServerError)
-	}
+	html.RenderPartial(w, "planet_shadbala_result.html", webData)
 }

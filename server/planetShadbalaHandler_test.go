@@ -56,24 +56,15 @@ func TestPlanetShadbalaResultsHandlerHTMXFragment(t *testing.T) {
 }
 
 func TestPlanetShadbalaResultTemplateNilSafe(t *testing.T) {
-	tpl, err := html.GetTpl().Clone()
-	if err != nil {
-		t.Fatal(err)
-	}
-	tpl, err = tpl.ParseFS(html.GetViewsFs(), "planet_shadbala_result.html")
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	var out strings.Builder
-	err = tpl.ExecuteTemplate(&out, "planet_shadbala_result.html", lib.WebData{
+	err := html.Execute(&out, "planet_shadbala_result.html", lib.WebData{
 		"displayDate": "May 21, 2026 12:30",
 		"shadbala": lib.PlanetShadbalaView{Planets: []lib.PlanetShadbalaRecord{{
 			ID:    "moon",
 			Name:  "Moon",
 			State: "Direct",
 		}}},
-	})
+	}, "planet_shadbala_result.html")
 	if err != nil {
 		t.Fatalf("expected nil-safe template execution, got %v", err)
 	}

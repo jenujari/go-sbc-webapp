@@ -17,25 +17,7 @@ func tithyHandler(w http.ResponseWriter, r *http.Request) {
 	webData := app.WebData
 	webData["currentDate"] = time.Now().Format("2006-01-02")
 
-	tpl, err := html.GetTpl().Clone()
-	if err != nil {
-		config.GetLogger().Println("template clone failed", err)
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
-
-	tpl, err = tpl.ParseFS(html.GetViewsFs(), "layout.html", "tithy.html")
-	if err != nil {
-		config.GetLogger().Println("template not found", err)
-		http.Error(w, "template not found", http.StatusInternalServerError)
-		return
-	}
-
-	err = tpl.ExecuteTemplate(w, "layout.html", webData)
-	if err != nil {
-		config.GetLogger().Println("template execution failed", err)
-		http.Error(w, "template execution failed", http.StatusInternalServerError)
-	}
+	html.RenderPage(w, webData, "tithy.html")
 }
 
 func tithyTableHandler(w http.ResponseWriter, r *http.Request) {
@@ -95,25 +77,7 @@ func tithyTableHandler(w http.ResponseWriter, r *http.Request) {
 	webData["rangeEnd"] = records[len(records)-1].DateLabel
 	webData["tithies"] = records
 
-	tpl, err := html.GetTpl().Clone()
-	if err != nil {
-		config.GetLogger().Println("template clone failed", err)
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
-
-	tpl, err = tpl.ParseFS(html.GetViewsFs(), "tithy_table.html")
-	if err != nil {
-		config.GetLogger().Println("template not found", err)
-		http.Error(w, "template not found", http.StatusInternalServerError)
-		return
-	}
-
-	err = tpl.ExecuteTemplate(w, "tithy_table.html", webData)
-	if err != nil {
-		config.GetLogger().Println("template execution failed", err)
-		http.Error(w, "template execution failed", http.StatusInternalServerError)
-	}
+	html.RenderPartial(w, "tithy_table.html", webData)
 }
 
 type TithyTableRecord struct {
