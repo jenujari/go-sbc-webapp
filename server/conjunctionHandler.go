@@ -13,10 +13,13 @@ import (
 )
 
 func conjunctionHandler(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	services := ctx.Value("services").(map[string]any)
+	app, ok := requestApp(r)
+	if !ok {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
 
-	webData := services["webData"].(lib.WebData)
+	webData := app.WebData
 	webData["planets"] = plLib.PLANET_NAMES
 	webData["defaultPlanet1"] = plLib.SUN
 	webData["defaultPlanet2"] = plLib.MOON
@@ -53,9 +56,13 @@ func conjunctionSearchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx := r.Context()
-	services := ctx.Value("services").(map[string]any)
-	webData := services["webData"].(lib.WebData)
-	sweClient := services["sweClient"].(lib.SweGrpcClient)
+	app, ok := requestApp(r)
+	if !ok {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+	webData := app.WebData
+	sweClient := app.SweClient
 	delete(webData, "conjunctionError")
 	delete(webData, "conjunctionNotFound")
 	delete(webData, "conjunctionResult")

@@ -8,7 +8,6 @@ import (
 
 	"jenujari/go-sbc-webapp/config"
 	"jenujari/go-sbc-webapp/html"
-	"jenujari/go-sbc-webapp/lib"
 	"jenujari/go-sbc-webapp/sqls"
 
 	"github.com/jackc/pgx/v5/pgtype"
@@ -28,20 +27,20 @@ func astrologyGenerateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx := r.Context()
-	services, ok := ctx.Value("services").(map[string]any)
-	if !ok || services == nil {
+	app, ok := requestApp(r)
+	if !ok {
 		http.Error(w, "Services not available", http.StatusInternalServerError)
 		return
 	}
 
-	db, ok := services["db"].(*lib.DBService)
-	if !ok || db == nil {
+	db := app.DB
+	if db == nil {
 		http.Error(w, "Database connection is not available. Check db.url or DATABASE_URL.", http.StatusInternalServerError)
 		return
 	}
 
-	sweClient, ok := services["sweClient"].(lib.SweGrpcClient)
-	if !ok || sweClient == nil {
+	sweClient := app.SweClient
+	if sweClient == nil {
 		http.Error(w, "Swe gRPC Client is not available.", http.StatusInternalServerError)
 		return
 	}

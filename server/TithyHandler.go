@@ -3,16 +3,18 @@ package server
 import (
 	"jenujari/go-sbc-webapp/config"
 	"jenujari/go-sbc-webapp/html"
-	"jenujari/go-sbc-webapp/lib"
 	"net/http"
 	"time"
 )
 
 func tithyHandler(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	services := ctx.Value("services").(map[string]any)
+	app, ok := requestApp(r)
+	if !ok {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
 
-	webData := services["webData"].(lib.WebData)
+	webData := app.WebData
 	webData["currentDate"] = time.Now().Format("2006-01-02")
 
 	tpl, err := html.GetTpl().Clone()
@@ -43,9 +45,13 @@ func tithyTableHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx := r.Context()
-	services := ctx.Value("services").(map[string]any)
-	webData := services["webData"].(lib.WebData)
-	sweClient := services["sweClient"].(lib.SweGrpcClient)
+	app, ok := requestApp(r)
+	if !ok {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+	webData := app.WebData
+	sweClient := app.SweClient
 
 	selectedDate := r.FormValue("selected_date")
 	if selectedDate == "" {

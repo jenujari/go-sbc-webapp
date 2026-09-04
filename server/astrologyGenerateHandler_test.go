@@ -104,10 +104,10 @@ func (m *mockSweGrpcClient) GetBalas(ctx context.Context, ts string) (*proto.Bal
 }
 
 func newTestContext(db *lib.DBService, swe lib.SweGrpcClient) context.Context {
-	return context.WithValue(context.Background(), "services", map[string]any{
-		"webData":   lib.WebData{"appname": "webapp"},
-		"db":        db,
-		"sweClient": swe,
+	return lib.WithApp(context.Background(), &lib.App{
+		WebData:   lib.WebData{"appname": "webapp"},
+		DB:        db,
+		SweClient: swe,
 	})
 }
 
@@ -195,9 +195,9 @@ func TestAstrologyGenerateHandler_DatabaseNotAvailable(t *testing.T) {
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	// db service missing in context
-	req = req.WithContext(context.WithValue(req.Context(), "services", map[string]any{
-		"webData":   lib.WebData{"appname": "webapp"},
-		"sweClient": new(mockSweGrpcClient),
+	req = req.WithContext(lib.WithApp(req.Context(), &lib.App{
+		WebData:   lib.WebData{"appname": "webapp"},
+		SweClient: new(mockSweGrpcClient),
 	}))
 
 	rr := httptest.NewRecorder()

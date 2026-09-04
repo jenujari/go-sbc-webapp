@@ -3,7 +3,6 @@ package server
 import (
 	"jenujari/go-sbc-webapp/config"
 	"jenujari/go-sbc-webapp/html"
-	"jenujari/go-sbc-webapp/lib"
 	"net/http"
 )
 
@@ -13,10 +12,14 @@ func staticHander() http.Handler {
 
 func indexhandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	services := ctx.Value("services").(map[string]any)
+	app, ok := requestApp(r)
+	if !ok {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
 
-	webData := services["webData"].(lib.WebData)
-	sweClient := services["sweClient"].(lib.SweGrpcClient)
+	webData := app.WebData
+	sweClient := app.SweClient
 
 	pingResp, err := sweClient.Ping(ctx)
 	if err != nil {

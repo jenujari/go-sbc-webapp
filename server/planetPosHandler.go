@@ -3,7 +3,6 @@ package server
 import (
 	"jenujari/go-sbc-webapp/config"
 	"jenujari/go-sbc-webapp/html"
-	"jenujari/go-sbc-webapp/lib"
 	"net/http"
 	"sort"
 	"time"
@@ -13,10 +12,13 @@ import (
 )
 
 func planetPosHandler(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	services := ctx.Value("services").(map[string]any)
+	app, ok := requestApp(r)
+	if !ok {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
 
-	webData := services["webData"].(lib.WebData)
+	webData := app.WebData
 	webData["currentTime"] = time.Now().Format("2006-01-02T15:04")
 
 	tpl, err := html.GetTpl().Clone()
@@ -48,9 +50,13 @@ func positionsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx := r.Context()
-	services := ctx.Value("services").(map[string]any)
-	webData := services["webData"].(lib.WebData)
-	sweClient := services["sweClient"].(lib.SweGrpcClient)
+	app, ok := requestApp(r)
+	if !ok {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+	webData := app.WebData
+	sweClient := app.SweClient
 
 	datetime := r.FormValue("datetime")
 	parsedDate, err := time.Parse("2006-01-02T15:04", datetime)

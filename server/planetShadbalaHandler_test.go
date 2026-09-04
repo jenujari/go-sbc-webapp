@@ -17,26 +17,29 @@ func TestPlanetShadbalaResultsHandlerHTMXFragment(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/planet-shadbala/results", strings.NewReader(form.Encode()))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("HX-Request", "true")
-	req = req.WithContext(context.WithValue(req.Context(), "services", map[string]any{
-		"webData": lib.WebData{"appname": "webapp"},
-		"planetShadbalaService": fakePlanetShadbalaService{view: lib.PlanetShadbalaView{Planets: []lib.PlanetShadbalaRecord{{
-			ID:           "sun",
-			Name:         "Sun",
-			Symbol:       "☉",
-			UdayBala:     90,
-			UchchaBala:   80,
-			VakraBala:    0,
-			NavamshaBala: 70,
-			KshetraBala:  60,
-			Total:        60,
-			Sign:         "Leo",
-			Nakshatra:    "Magha",
-			Vedha:        "left",
-			VedhaTarget:  "Shravana",
-			Speed:        "0.9800° / day",
-			State:        "Direct",
-			Retrograde:   false,
-		}}},
+	req = req.WithContext(lib.WithApp(req.Context(), &lib.App{
+		WebData: lib.WebData{"appname": "webapp"},
+		PlanetShadbala: fakePlanetShadbalaService{
+			view: lib.PlanetShadbalaView{
+				Planets: []lib.PlanetShadbalaRecord{{
+					ID:           "sun",
+					Name:         "Sun",
+					Symbol:       "☉",
+					UdayBala:     90,
+					UchchaBala:   80,
+					VakraBala:    0,
+					NavamshaBala: 70,
+					KshetraBala:  60,
+					Total:        60,
+					Sign:         "Leo",
+					Nakshatra:    "Magha",
+					Vedha:        "left",
+					VedhaTarget:  "Shravana",
+					Speed:        "0.9800° / day",
+					State:        "Direct",
+					Retrograde:   false,
+				}},
+			},
 		},
 	}))
 

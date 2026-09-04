@@ -3,15 +3,17 @@ package server
 import (
 	"jenujari/go-sbc-webapp/config"
 	"jenujari/go-sbc-webapp/html"
-	"jenujari/go-sbc-webapp/lib"
 	"net/http"
 	"time"
 )
 
 func planetShadbalaHandler(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	services := ctx.Value("services").(map[string]any)
-	webData := cloneWebData(services["webData"].(lib.WebData))
+	app, ok := requestApp(r)
+	if !ok {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+	webData := cloneWebData(app.WebData)
 	webData["currentTime"] = time.Now().Format("2006-01-02T15:04")
 
 	tpl, err := html.GetTpl().Clone()
@@ -41,9 +43,13 @@ func planetShadbalaResultsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx := r.Context()
-	services := ctx.Value("services").(map[string]any)
-	webData := cloneWebData(services["webData"].(lib.WebData))
-	shadbalaService := services["planetShadbalaService"].(lib.PlanetShadbalaService)
+	app, ok := requestApp(r)
+	if !ok {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+	webData := cloneWebData(app.WebData)
+	shadbalaService := app.PlanetShadbala
 
 	datetime := r.FormValue("datetime")
 	if datetime == "" {

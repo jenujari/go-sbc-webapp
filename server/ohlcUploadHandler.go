@@ -38,12 +38,16 @@ func ohlcUploadPageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx := r.Context()
-	services := ctx.Value("services").(map[string]any)
-	webData := services["webData"].(lib.WebData)
+	app, ok := requestApp(r)
+	if !ok {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+	webData := app.WebData
 
 	data := cloneWebData(webData)
-	db, ok := services["db"].(*lib.DBService)
-	if !ok || db == nil {
+	db := app.DB
+	if db == nil {
 		data["Error"] = "Database connection is not available. Check db.url or DATABASE_URL."
 	} else {
 		tickers, err := db.Queries.ListTickers(ctx)
@@ -88,9 +92,13 @@ func ohlcUploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx := r.Context()
-	services := ctx.Value("services").(map[string]any)
-	db, ok := services["db"].(*lib.DBService)
-	if !ok || db == nil {
+	app, ok := requestApp(r)
+	if !ok {
+		renderOHLCUploadResult(w, ohlcUploadResultData{Errors: []string{"Database connection is not available."}}, http.StatusInternalServerError)
+		return
+	}
+	db := app.DB
+	if db == nil {
 		renderOHLCUploadResult(w, ohlcUploadResultData{Errors: []string{"Database connection is not available."}}, http.StatusInternalServerError)
 		return
 	}
