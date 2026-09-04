@@ -43,9 +43,7 @@ func ohlcUploadPageHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
-	webData := app.WebData
-
-	data := cloneWebData(webData)
+	data := app.PageData()
 	db := app.DB
 	if db == nil {
 		data["Error"] = "Database connection is not available. Check db.url or DATABASE_URL."
@@ -60,14 +58,6 @@ func ohlcUploadPageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	html.RenderPage(w, data, "ohlc_upload.html")
-}
-
-func cloneWebData(webData lib.WebData) lib.WebData {
-	data := make(lib.WebData, len(webData)+2)
-	for key, value := range webData {
-		data[key] = value
-	}
-	return data
 }
 
 func ohlcUploadHandler(w http.ResponseWriter, r *http.Request) {

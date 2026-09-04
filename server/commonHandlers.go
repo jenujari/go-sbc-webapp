@@ -18,7 +18,7 @@ func indexhandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	webData := app.WebData
+	webData := app.PageData()
 	sweClient := app.SweClient
 
 	pingResp, err := sweClient.Ping(ctx)

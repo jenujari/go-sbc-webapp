@@ -19,7 +19,7 @@ func conjunctionHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	webData := app.WebData
+	webData := app.PageData()
 	webData["planets"] = plLib.PLANET_NAMES
 	webData["defaultPlanet1"] = plLib.SUN
 	webData["defaultPlanet2"] = plLib.MOON
@@ -43,7 +43,7 @@ func conjunctionSearchHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
-	webData := app.WebData
+	webData := app.PageData()
 	sweClient := app.SweClient
 	delete(webData, "conjunctionError")
 	delete(webData, "conjunctionNotFound")

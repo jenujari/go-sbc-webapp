@@ -13,7 +13,7 @@ func planetShadbalaHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
-	webData := cloneWebData(app.WebData)
+	webData := app.PageData()
 	webData["currentTime"] = time.Now().Format("2006-01-02T15:04")
 
 	html.RenderPage(w, webData, "planet_shadbala.html")
@@ -31,7 +31,7 @@ func planetShadbalaResultsHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
-	webData := cloneWebData(app.WebData)
+	webData := app.PageData()
 	shadbalaService := app.PlanetShadbala
 
 	datetime := r.FormValue("datetime")

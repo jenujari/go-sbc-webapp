@@ -14,7 +14,7 @@ func tithyHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	webData := app.WebData
+	webData := app.PageData()
 	webData["currentDate"] = time.Now().Format("2006-01-02")
 
 	html.RenderPage(w, webData, "tithy.html")
@@ -32,7 +32,7 @@ func tithyTableHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
-	webData := app.WebData
+	webData := app.PageData()
 	sweClient := app.SweClient
 
 	selectedDate := r.FormValue("selected_date")

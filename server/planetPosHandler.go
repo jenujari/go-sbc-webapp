@@ -18,7 +18,7 @@ func planetPosHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	webData := app.WebData
+	webData := app.PageData()
 	webData["currentTime"] = time.Now().Format("2006-01-02T15:04")
 
 	html.RenderPage(w, webData, "planet_pos.html")
@@ -36,7 +36,7 @@ func positionsHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
-	webData := app.WebData
+	webData := app.PageData()
 	sweClient := app.SweClient
 
 	datetime := r.FormValue("datetime")
