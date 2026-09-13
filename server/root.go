@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -45,7 +44,7 @@ func init() {
 	router.HandleFunc("/ohlc-upload/generate-astrology", astrologyGenerateHandler)
 	router.HandleFunc("/", indexhandler)
 
-	server.Handler = GlobalRequestContextSetter(router)
+	server.Handler = withApp(router)
 	config.GetLogger().Println("server initialization complete.")
 }
 
@@ -70,13 +69,12 @@ func GetServer() *http.Server {
 	return server
 }
 
-func GlobalRequestContextSetter(next http.Handler) http.Handler {
+func withApp(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-
-		ctx = context.WithValue(ctx, "services", lib.GetAllServices())
-
-		r = r.WithContext(ctx)
-		next.ServeHTTP(w, r)
+		next.ServeHTTP(w, r.WithContext(lib.WithApp(r.Context(), lib.GetApp())))
 	})
+}
+
+func requestApp(r *http.Request) (*lib.App, bool) {
+	return lib.AppFromContext(r.Context())
 }

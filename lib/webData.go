@@ -9,3 +9,18 @@ func GetGlobalWebData(cfg *config.Config) WebData {
 		"appname": cfg.WebAppConfig.Appname,
 	}
 }
+
+func (d WebData) Clone() WebData {
+	out := make(WebData, len(d)+8)
+	for key, value := range d {
+		out[key] = value
+	}
+	return out
+}
+
+func (a *App) PageData() WebData {
+	if a == nil {
+		return WebData{}
+	}
+	return a.WebData.Clone()
+}
