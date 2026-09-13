@@ -6,26 +6,16 @@ import (
 	"jenujari/go-sbc-webapp/config"
 )
 
-var services map[string]any
+var app *App
 
 func init() {
-	cfg := config.GetConfig()
-
-	services = make(map[string]any)
-
-	sweClient, _ := NewSweGrpcClient()
-	dbService, err := NewDBService(context.Background(), cfg)
+	a, err := NewApp(context.Background(), config.GetConfig())
 	if err != nil {
-		config.GetLogger().Println("database initialization failed", err)
+		config.GetLogger().Println("app initialization incomplete", err)
 	}
-
-	services["sweClient"] = sweClient
-	services["planetShadbalaService"] = NewPlanetShadbalaService(sweClient)
-	services["webData"] = GetGlobalWebData(cfg)
-	services["config"] = cfg
-	services["db"] = dbService
+	app = a
 }
 
-func GetAllServices() map[string]any {
-	return services
+func GetApp() *App {
+	return app
 }
